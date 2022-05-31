@@ -1,0 +1,15 @@
+.dub
+docs.json
+__dummy.html
+docs/
+/freecraft
+freecraft.so
+freecraft.dylib
+freecraft.dll
+freecraft.a
+freecraft.lib
+freecraft-test-*
+*.exe
+*.o
+*.obj
+*.lst
