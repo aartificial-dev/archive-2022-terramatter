@@ -8,7 +8,7 @@
             "name": "Debug D project",
             "cwd": "${workspaceFolder}",
             "preLaunchTask": "build default",
-            "program": "./bin/freecraft.exe",
+            "program": "./bin/terramatter.exe",
             "args": []
         }
     ]

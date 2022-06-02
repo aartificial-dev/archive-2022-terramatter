@@ -1,1 +1,16 @@
-{"authors":["al1-ce"],"copyright":"Copyright (c) 2022 al1-ce","description":"A minimal D application.","license":"GNU GPL 3.0","name":"freecraft","targetPath":".\/bin\/"}
+{
+	"authors": [
+		"al1-ce"
+	],
+	"copyright": "Copyright (c) 2022 al1-ce",
+	"dependencies": {
+		"bindbc-sdl": "~>1.1.2",
+		"derelict-assimp3": "~>1.3.0",
+		"derelict-fi": "~>2.0.3",
+		"derelict-gl3": "~>1.0.24"
+	},
+	"description": "A minimal D application.",
+	"license": "GNU GPL 3.0",
+	"name": "terramatter",
+	"targetPath": "./bin/"
+}

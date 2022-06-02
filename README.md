@@ -1,4 +1,4 @@
-# freecraft
+# terramatter
 
 
 
@@ -15,14 +15,14 @@ Already a pro? Just edit this README.md and make it your own. Want to make it ea
 
 ```
 cd existing_repo
-git remote add origin https://gitlab.com/artificial-studio/freecraft.git
+git remote add origin https://gitlab.com/artificial-studio/terramatter.git
 git branch -M main
 git push -uf origin main
 ```
 
 ## Integrate with your tools
 
-- [ ] [Set up project integrations](https://gitlab.com/artificial-studio/freecraft/-/settings/integrations)
+- [ ] [Set up project integrations](https://gitlab.com/artificial-studio/terramatter/-/settings/integrations)
 
 ## Collaborate with your team
 

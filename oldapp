@@ -1,0 +1,262 @@
+module oldapp;
+
+import dlangui;
+
+mixin APP_ENTRY_POINT;
+
+/// entry point for dlangui based application
+extern (C) int UIAppMain(string[] args) {
+    // create window
+
+    string[] resourceDirs = [
+        appendPath(exePath, "../res/")
+    ];
+
+    Window window = Platform.instance.createWindow("DlangUI example - HelloWorld", null);
+
+    Platform.instance.GLVersionMajor = 2;
+    Platform.instance.resourceDirs = resourceDirs;
+
+    static if (ENABLE_OPENGL) {
+        window.mainWidget = new OpenGLWidget();
+    } else {
+        window.mainWidget = new TextWidget(null, "App is built with OpenGL disabled");
+    }
+
+    // window.windowIcon = drawableCache.getImage("path"); // ????
+
+    window.show();
+
+    // run message loop
+    return Platform.instance.enterMessageLoop();
+}
+
+static if (ENABLE_OPENGL):
+
+import dlangui.graphics.glsupport;
+import dlangui.graphics.gldrawbuf;
+
+class OpenGLWidget: VerticalLayout {
+    private TextWidget textWidget;
+
+    this() {
+        super("OpenGLView");
+        
+        layoutWidth = FILL_PARENT;
+        layoutHeight = FILL_PARENT;
+        alignment = Align.Center;
+
+        // to use other widgets in it
+        Widget w = parseML(q{
+            VerticalLayout {
+                alignment: center
+                layoutWidth: fill; layoutHeight: fill
+                
+                VerticalLayout {
+                    id: glView
+                    layoutWidth: fill; layoutHeight: fill
+                    HorizontalLayout {
+                        layoutWidth: fill; layoutHeight: 30px
+                        TextWidget { 
+                            id: fpsText
+                            text: "FPS: ??"; textColor: "white"; backgroundColor: "black"
+                            fontSize: 150%; fontWeight: 800; fontFace: "Arial"
+                            maxWidth: 120px
+                        }
+                    }
+                    
+                }
+            }
+        });
+
+        w.childById("glView").backgroundDrawable = DrawableRef(new OpenGLDrawable(&doDraw));
+        textWidget = w.childById!TextWidget("fpsText");
+        addChild(w);
+    }
+
+    private GLfloat angle = 0.0f;
+    // step???
+    @property protected override bool animating() {return true;}
+    protected override void animate(long delta) {
+        angle += delta * 0.000002f;
+        textWidget.text((delta.to!float / 10_000_000.0f).to!dstring);
+        invalidate();
+    }
+    
+    private GLRenderProgram _program;
+    private GLTexture _tx;
+    private VAO _vao;
+    private VBO _vbo;
+    // render???
+    private void doDraw(Rect windowRect, Rect rc) {
+        if (!_program) {
+            _program = new GLRenderProgram();
+            _program.compile();
+            createMesh();
+            auto buf = _program.createBuffers(vertices, colors, texcoords);
+            _vao = buf[0];
+            _vbo = buf[1];
+        }
+
+        if (!_program.check()) return;
+
+        if (!_tx.isValid) {
+            Log.e("Invalid texture Crate");
+            return;
+        }
+        
+        checkgl!glEnable(GL_CULL_FACE);
+        checkgl!glEnable(GL_DEPTH_TEST);
+        checkgl!glCullFace(GL_BACK);
+
+        // ======== Projection Matrix ==================
+        mat4 projectionMatrix;
+        float aspectRatio = cast(float)rc.width / cast(float)rc.height;
+        projectionMatrix.setPerspective(45.0f, aspectRatio, 0.1f, 100.0f);
+
+        // ======== View Matrix ==================
+        mat4 viewMatrix;
+        viewMatrix.translate(0, 0, -6);
+        viewMatrix.rotatex(-15.0f);
+        //viewMatrix.lookAt(vec3(-10, 0, 0), vec3(0, 0, 0), vec3(0, 1, 0));//translation(0.0f, 0.0f, 4.0f).rotatez(angle);
+
+        // ======== Model Matrix ==================
+        mat4 modelMatrix;
+        modelMatrix.scale(1.5f);
+        modelMatrix.rotatez(30.0f + angle * 0.3456778);
+        modelMatrix.rotatey(angle);
+        modelMatrix.rotatez(angle * 1.98765f);
+
+        // ======= PMV matrix =====================
+        mat4 projectionViewModelMatrix = projectionMatrix * viewMatrix * modelMatrix;
+
+        _program.execute(_vao, cast(int)vertices.length / 3, _tx.texture, true, projectionViewModelMatrix.m);
+
+        checkgl!glDisable(GL_CULL_FACE);
+        checkgl!glDisable(GL_DEPTH_TEST);
+    }
+
+    private float[] vertices;
+    private float[] texcoords;
+    private float[4*6*6] colors;
+    // Cube mesh
+    private void createMesh() {
+        if (!_tx)
+            _tx = new GLTexture("tex\\crate");
+
+        // define Cube mesh
+        auto p000 = [-1.0f, -1.0f, -1.0f];
+        auto p100 = [ 1.0f, -1.0f, -1.0f];
+        auto p010 = [-1.0f,  1.0f, -1.0f];
+        auto p110 = [ 1.0f,  1.0f, -1.0f];
+        auto p001 = [-1.0f, -1.0f,  1.0f];
+        auto p101 = [ 1.0f, -1.0f,  1.0f];
+        auto p011 = [-1.0f,  1.0f,  1.0f];
+        auto p111 = [ 1.0f,  1.0f,  1.0f];
+        vertices = p000 ~ p010 ~ p110 ~  p110 ~ p100 ~ p000 // front face
+                 ~ p101 ~ p111 ~ p011 ~  p011 ~ p001 ~ p101 // back face
+                 ~ p100 ~ p110 ~ p111 ~  p111 ~ p101 ~ p100 // right face
+                 ~ p001 ~ p011 ~ p010 ~  p010 ~ p000 ~ p001 // left face
+                 ~ p010 ~ p011 ~ p111 ~  p111 ~ p110 ~ p010 // top face
+                 ~ p001 ~ p000 ~ p100 ~  p100 ~ p101 ~ p001 // bottom face
+            ;
+        // texture coordinates
+        float[2] uv = _tx.uv;
+        float tx0 = 0.0f;
+        float tx1 = uv[0];
+        float ty0 = 0.0f;
+        float ty1 = uv[1];
+        float[12] facetx = [tx1, ty1, // triangle 1
+                            tx0, ty0,
+                            tx0, ty1,
+                            tx0, ty1, // triangle 2
+                            tx1, ty0,
+                            tx1, ty1];
+        texcoords = facetx ~ facetx ~ facetx ~ facetx ~ facetx ~ facetx;
+        // init with white color (1, 1, 1, 1)
+        foreach(ref cl; colors)
+            cl = 1.0f;
+    }
+}
+
+import std.typecons : Tuple, tuple;
+
+class GLRenderProgram: GLProgram {
+    @property protected override string vertexSource() {
+        return q{
+            in vec4 vertex;
+            in vec4 colAttr;
+            in vec4 texCoord;
+            out vec4 col;
+            out vec4 texc;
+            uniform mat4 matrix;
+
+            void main(void) {
+                gl_Position = matrix * vertex;
+                col = colAttr;
+                texc = texCoord;
+            }
+        };
+
+    }
+    @property protected override string fragmentSource() {
+        return q{
+            uniform sampler2D tex;
+            in vec4 col;
+            in vec4 texc;
+            out vec4 outColor;
+
+            void main(void) {
+                outColor = texture(tex, texc.st) * col * vec4(1.0, 0.7, 0.7, 1.0);
+            }
+        };
+    }
+
+    // attribute locations
+    protected GLint matrixLocation;
+    protected GLint vertexLocation;
+    protected GLint colAttrLocation;
+    protected GLint texCoordLocation;
+
+    protected override bool initLocations() {
+        matrixLocation = getUniformLocation("matrix");
+        vertexLocation = getAttribLocation("vertex");
+        colAttrLocation = getAttribLocation("colAttr");
+        texCoordLocation = getAttribLocation("texCoord");
+        return matrixLocation >= 0 && vertexLocation >= 0 && colAttrLocation >= 0 && texCoordLocation >= 0;
+    }
+
+    public Tuple!(VAO, VBO) createBuffers(float[] vertices, float[] colors, float[] texcoords) {
+
+        VBO vbo = new VBO;
+        vbo.fill([vertices, colors, texcoords]);
+
+        VAO vao = new VAO;
+        glVertexAttribPointer(vertexLocation, 3, GL_FLOAT, GL_FALSE, 0, cast(void*) 0);
+        glVertexAttribPointer(colAttrLocation, 4, GL_FLOAT, GL_FALSE, 0, 
+            cast(void*) (vertices.length * vertices[0].sizeof));
+        glVertexAttribPointer(texCoordLocation, 2, GL_FLOAT, GL_FALSE, 0, 
+            cast(void*) (vertices.length * vertices[0].sizeof + colors.length * colors[0].sizeof));
+
+        glEnableVertexAttribArray(vertexLocation);
+        glEnableVertexAttribArray(colAttrLocation);
+        glEnableVertexAttribArray(texCoordLocation);
+
+        return tuple(vao, vbo);
+    }
+
+    public void execute(VAO vao, int vertsCount, Tex2D texture, bool linear, float[16] matrix) {
+
+        bind();
+        checkgl!glUniformMatrix4fv(matrixLocation, 1, false, matrix.ptr);
+
+        texture.setup();
+        texture.setSamplerParams(linear);
+
+        vao.bind();
+        checkgl!glDrawArrays(GL_TRIANGLES, 0, vertsCount);
+
+        texture.unbind();
+        unbind();
+    }
+}
