@@ -4,15 +4,15 @@ import std.stdio;
 import std.string;
 import std.conv;
 
-import derelict.opengl3.gl;
-import derelict.assimp3.assimp;
-
 import terramatter.game.game;
 import terramatter.core.os.time;
 import terramatter.core.io.input;
+import terramatter.core.io.inputevent;
 
 import terramatter.render.renderengine;
 import terramatter.render.window;
+
+import bindbc.sdl;
 
 class Engine {
 
@@ -21,12 +21,14 @@ class Engine {
     public static string TITLE = "terramatter";
     public static float FRAME_CAP = 5000.0f;
 
-    private RenderEngine renderEngine;
+    private RenderEngine _renderEngine;
     private bool _isRunning;
     private Game _game;
     private int _width;
     private int _height;
     private float _frameTime;
+    private int _frames;
+    private int _fps;
 
     this(int width, int height, float framerate, Game game) {
         assert(game !is null);
@@ -36,13 +38,17 @@ class Engine {
         _width = width;
         _height = height;
         _frameTime = 1.0f / framerate;
+        _frames = 0;
+        _fps = 60;
         _game.setEngine(this);
     }
 
     public void createWindow(string title) {
         Window.createWidnow(_width, _height, title);
-        this.renderEngine = new RenderEngine();
-        printf("opengl version: '%s'\n", this.renderEngine.getOpenGLVersion());
+        printf("OpenGL version: '%s'\n\n", _renderEngine.getOpenGLVersion());
+        _renderEngine = new RenderEngine();
+        _renderEngine.setEngine(this);
+        Window.setTitle("TerraMatter");
     }
 
     public int start() {
@@ -61,7 +67,6 @@ class Engine {
     private void run() {
         _isRunning = true;
 
-        int frames = 0;
         double frameCounter = 0;
 
         _game.start();
@@ -92,22 +97,24 @@ class Engine {
 
                 if (Window.isCloseRequested) stop();
 
-                _game.input(_frameTime.to!float);
                 Input.update();
+                _game.input(new InputEvent());
                 _game.update(_frameTime.to!float);
 
 				if (frameCounter >= 1.0) {				
-					writefln("FPS: %d", frames);
-					write("\33[1A\33[2K");
-					frames = 0;
+					// writefln("FPS: %d", _frames);
+                    // Window.setTitle("TerraMatter | FPS: " ~ _frames.to!string);
+                    // writeln(Window.getTitle());
+                    _fps = _frames;
+					_frames = 0;
 					frameCounter = 0;
 				}
             }
 
             if (doNeedRender) {
-                _game.render(renderEngine);
+                _game.render(_renderEngine);
                 Window.render();
-                ++frames;
+                ++_frames;
             } else {
                 // TF
                 Window.delay();
@@ -118,10 +125,20 @@ class Engine {
     }
 
     private void cleanUp() {
+        _game.dispose();
+        _renderEngine.dispose();
         Window.dispose();
     }
 
     public RenderEngine getRenderEngine() {
-        return renderEngine;
+        return _renderEngine;
+    }
+
+    public int fps() {
+        return _fps;
+    }
+
+    public string fpsString() {
+        return _fps.to!string;
     }
 }

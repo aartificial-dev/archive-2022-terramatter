@@ -6,26 +6,39 @@ import terramatter.game.game;
 
 int main(string[] args) {
     dstring winName = `
-### ### ### ### ### ###  ## ### ###
-##  ##  ##  ##  #   ##  ### ##   # 
-#   # # ### ### ### # # # # #    # 
-    `d;
+====  |===  |==\  |==\   / |  /\  /\   / |  ====  ====  |===  |==\
+ ||   |--   | /   | /   /--|  | \/ |  /--|   ||    ||   |--   | / 
+ ||   |___  |  \  |  \  |  |  |    |  |  |   ||    ||   |___  |  \
+`d;
+
+    dstring winNameAlt = `
+ #                           #   #          
+### ### ### ###  ## ###  ## ### ### ### ### 
+ #  ##  #   #   # # ### # #  #   #  ##  #   
+ ## ### #   #   ### # # ###  ##  ## ### #   
+`d;
 
     dstring unixName = `
-█▀▀ █▀█ █▀▀ █▀▀ █▀▀ █▀█ ▄▀█ █▀▀ ▀█▀
-█▀  █▀▄ ██▄ ██▄ █▄▄ █▀▄ █▀█ █▀   █ 
-    `d;
+▀█▀ █▀▀ █▀█ █▀█ ▄▀█ █▀▄▀█ ▄▀█ ▀█▀ ▀█▀ █▀▀ █▀█
+ █  ██▄ █▀▄ █▀▄ █▀█ █ ▀ █ █▀█  █   █  ██▄ █▀▄
+`d;
+
+    dstring unixNameAlt = `
+▀▀█▀▀ █▀▀ █▀▀█ █▀▀█ █▀▀█ █▀▄▀█ █▀▀█ ▀▀█▀▀ ▀▀█▀▀ █▀▀ █▀▀█ 
+░░█░░ █▀▀ █▄▄▀ █▄▄▀ █▄▄█ █░▀░█ █▄▄█ ░░█░░ ░░█░░ █▀▀ █▄▄▀ 
+░░▀░░ ▀▀▀ ▀░▀▀ ▀░▀▀ ▀░░▀ ▀░░░▀ ▀░░▀ ░░▀░░ ░░▀░░ ▀▀▀ ▀░▀▀
+`d;
 
     version(Windows) {
-        writef("%s\n", winName);
+        writef("%s\n", winNameAlt);
     } else {
-        writef("%s\n", unixName);
+        writef("%s\n", unixNameAlt);
     }
 
-    writeln("Creating Engine instance");
+    writeln("Creating Engine instance.\n");
 
     Engine engine = new Engine(800, 600, 60, new Game());
-    engine.createWindow("Test");
+    engine.createWindow("TerraMatter");
     
     return engine.start();
 }

@@ -2,29 +2,46 @@ module terramatter.game.game;
 
 import terramatter.core.engine;
 import terramatter.core.components.gameobject;
+import terramatter.core.io.inputevent;
 
 import terramatter.render.renderengine;
 
 class Game {
-    private GameObject root;
+    private GameObject _root;
 
-    void setEngine(Engine engine) {
-
+    // aka init
+    public void start() {
+        getRootObject().propagateCreate();
     }
 
-    void start() {
-
+    public void input(InputEvent e) {
+        getRootObject().propagateInput(e);
     }
 
-    void input(float delta) {
-
+    public void update(float delta) {
+        getRootObject().propagateUpdate(delta);
     }
 
-    void update(float delta) {
-
+    public void render(RenderEngine re) {
+        re.render(getRootObject());
     }
 
-    void render(RenderEngine re) {
+    public void addObject(GameObject object) {
+        getRootObject().addChild(object);
+    }
 
+    private GameObject getRootObject() {
+        if (_root is null) {
+            _root = new GameObject();
+        }
+        return _root;
+    }
+
+    public void setEngine(Engine e) { 
+        getRootObject().setEngine(e); 
+    }
+
+    public void dispose() {
+        
     }
 }
