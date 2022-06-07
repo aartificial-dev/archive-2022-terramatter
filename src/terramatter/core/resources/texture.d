@@ -104,7 +104,7 @@ final class Texture2D {
 
     public void setBorderColor(Color col) {
         bind();
-        glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, col.asArray.ptr);
+        glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, col.ptr);
         unbind();  
     }
 

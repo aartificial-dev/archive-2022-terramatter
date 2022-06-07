@@ -1,3 +1,12 @@
+/****************************************
+ *             TERRAMATTER              *
+ ****************************************
+ *    GAME BY AL1-CE (AKA SILYNEKO)     *
+ * GAME ENGINE BY AL1-CE (AKA SILYNEKO) *
+ *          PART OF ARTIFICIAL          *
+ *       COPYRIGHT (C) 2022-2022        *
+ ****************************************/
+
 import std.stdio;
 import std.string;
 
@@ -5,13 +14,8 @@ import terramatter.core.engine;
 import terramatter.game.game;
 
 int main(string[] args) {
-    dstring winName = `
-====  |===  |==\  |==\   / |  /\  /\   / |  ====  ====  |===  |==\
- ||   |--   | /   | /   /--|  | \/ |  /--|   ||    ||   |--   | / 
- ||   |___  |  \  |  \  |  |  |    |  |  |   ||    ||   |___  |  \
-`d;
 
-    dstring winNameAlt = `
+    dstring winName = `
  #                           #   #          
 ### ### ### ###  ## ###  ## ### ### ### ### 
  #  ##  #   #   # # ### # #  #   #  ##  #   
@@ -23,16 +27,10 @@ int main(string[] args) {
  █  ██▄ █▀▄ █▀▄ █▀█ █ ▀ █ █▀█  █   █  ██▄ █▀▄
 `d;
 
-    dstring unixNameAlt = `
-▀▀█▀▀ █▀▀ █▀▀█ █▀▀█ █▀▀█ █▀▄▀█ █▀▀█ ▀▀█▀▀ ▀▀█▀▀ █▀▀ █▀▀█ 
-░░█░░ █▀▀ █▄▄▀ █▄▄▀ █▄▄█ █░▀░█ █▄▄█ ░░█░░ ░░█░░ █▀▀ █▄▄▀ 
-░░▀░░ ▀▀▀ ▀░▀▀ ▀░▀▀ ▀░░▀ ▀░░░▀ ▀░░▀ ░░▀░░ ░░▀░░ ▀▀▀ ▀░▀▀
-`d;
-
     version(Windows) {
-        writef("%s\n", winNameAlt);
+        writef("%s\n", winName);
     } else {
-        writef("%s\n", unixNameAlt);
+        writef("%s\n", unixName);
     }
 
     writeln("Creating Engine instance.\n");

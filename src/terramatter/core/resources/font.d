@@ -9,7 +9,7 @@ import bindbc.freetype;
 import bindbc.opengl;
 import bindbc.sdl;
 
-import terramatter.core.math.vector2;
+import terramatter.core.math.vector;
 import terramatter.core.resources.texture;
 
 final class Font {
@@ -57,7 +57,7 @@ final class Font {
 
             tex.setFilter(GL_LINEAR, GL_LINEAR);
             tex.setWrap(GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE);
-
+            
             FontCharacter ch = {
                 texture: tex,
                 size: new Vector2i(_font.glyph.bitmap.width, _font.glyph.bitmap.rows),

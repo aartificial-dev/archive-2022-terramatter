@@ -7,10 +7,8 @@ import std.stdio: writefln;
 import bindbc.opengl;
 
 import terramatter.core.os.filesystem;
-import terramatter.core.math.vector2;
-import terramatter.core.math.vector3;
-import terramatter.core.math.vector4;
-import terramatter.core.math.matrix4;
+import terramatter.core.math.vector;
+import terramatter.core.math.matrix;
 import terramatter.core.math.color;
 
 final class Shader {
@@ -148,9 +146,9 @@ final class Shader {
     public void setFloat(string name, float value) {
         glUniform1f(getUniformLocation(name), value);
     }
-
+    
     public void setVec2(string name, Vector2f value) {
-        glUniform2fv(getUniformLocation(name), 1, value.asArray.ptr);
+        glUniform2fv(getUniformLocation(name), 1, value.ptr);
     }
 
     public void setVec2(string name, float x, float y) {
@@ -158,7 +156,7 @@ final class Shader {
     }
 
     public void setVec3(string name, Vector3f value) {
-        glUniform3fv(getUniformLocation(name), 1, value.asArray.ptr);
+        glUniform3fv(getUniformLocation(name), 1, value.ptr);
     }
 
     public void setVec3(string name, float x, float y, float z) {
@@ -166,7 +164,7 @@ final class Shader {
     }
 
     public void setVec4(string name, Vector4f value) {
-        glUniform4fv(getUniformLocation(name), 1, value.asArray.ptr);
+        glUniform4fv(getUniformLocation(name), 1, value.ptr);
     }
 
     public void setVec4(string name, float x, float y, float z, float w) {
@@ -174,7 +172,7 @@ final class Shader {
     }
 
     public void setCol(string name, Color value) {
-        glUniform4fv(getUniformLocation(name), 1, value.asArray.ptr);
+        glUniform4fv(getUniformLocation(name), 1, value.ptr);
     }
 
     public void setCol(string name, float r, float g, float b, float a) {
@@ -190,7 +188,7 @@ final class Shader {
     // }
 
     public void setMat4(string name, Matrix4f value) {
-        glUniformMatrix4fv(getUniformLocation(name), 1, GL_FALSE, value.asArray1D.ptr);
+        glUniformMatrix4fv(getUniformLocation(name), 1, GL_FALSE, value.createBuffer.ptr);
         // glUniformMatrix4fv(getUniformLocation(name), 1, GL_FALSE, value.getM[0].ptr);
     }
 }

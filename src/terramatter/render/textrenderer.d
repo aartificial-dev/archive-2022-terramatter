@@ -5,8 +5,8 @@ import std.conv;
 import bindbc.opengl;
 
 import terramatter.core.math.color;
-import terramatter.core.math.vector2;
-import terramatter.core.math.matrix4;
+import terramatter.core.math.vector;
+import terramatter.core.math.matrix;
 import terramatter.core.resources.shader;
 import terramatter.core.resources.font;
 import terramatter.core.resources.texture;
@@ -36,13 +36,13 @@ class TextRenderer {
         _proj = new Matrix4f();
         _proj.initOrthographic(0.0f, Window.getWidth, 0.0f, Window.getHeight, 1.0, -1.0);
 
-        _cwhite = new Color(1, 1, 1, 1);
+        _cwhite = new Color(1.0f, 1.0f, 1.0f, 1.0f);
     }
 
     public void renderTextExt(string text, float x, float y, float xscale, float yscale, Font font, Color col) {
         // flipping Y axis to match opengl
         y = Window.getHeight - y;
-
+        
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
