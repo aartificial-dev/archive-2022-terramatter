@@ -233,14 +233,12 @@ class VertexArray {
         _vao.unbind();
     }
 
-    public void renderTexture2D(GLenum type, int vertAmmount, Texture2D tex, void delegate() uniform = null) {
+    public void renderTexture2D(GLenum type, int vertAmmount, Texture2D tex) {
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
         _vao.bind();
         tex.bind();
-        
-        if (uniform !is null) uniform();
 
         // last 0 is used if ebo is not in use 
         glDrawElements(type, vertAmmount, GL_UNSIGNED_INT, cast(GLvoid*) 0);

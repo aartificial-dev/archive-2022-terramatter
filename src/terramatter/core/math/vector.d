@@ -327,7 +327,9 @@ class Vector(T, size_t N) if (isNumeric!T && N > 0)  {
             return ret;
         }
 
+        // FIXME
         // TODO
+        // it's in math
         // public Vector2!T cubicInterpolate(Vector2!T b, Vector2!T prea, Vector2!T postb, float weight) {
         //     Vector2 res = *this;
         //     res.x = Math::cubic_interpolate(res.x, p_b.x, p_pre_a.x, p_post_b.x, p_weight);
@@ -421,6 +423,9 @@ class Vector(T, size_t N) if (isNumeric!T && N > 0)  {
             T angle = angleTo(to);
             return rotated(angle * weight) * (rsLen / stLen);
         }
+
+        // LINK https://glmatrix.net/docs/vec2.js
+        // LINK https://github.com/godotengine/godot/blob/master/core/math/vector2.cpp
     }
 
     /******************************
@@ -431,6 +436,11 @@ class Vector(T, size_t N) if (isNumeric!T && N > 0)  {
         VecType cross(VecType b) {
             return this;
         }
+
+        // TODO
+
+        // LINK https://glmatrix.net/docs/vec3.js.html
+        // LINK https://github.com/godotengine/godot/blob/master/core/math/vector3.cpp
     }
 
     /******************************
@@ -439,11 +449,8 @@ class Vector(T, size_t N) if (isNumeric!T && N > 0)  {
     // here probably gonna be almost nothing
     // here be dragons?
     static if(isFloatingPoint!T && N == 4) {
-
+        // TODO ?
     }
-
-    // https://glmatrix.net/docs/vec2.js
-    // https://github.com/godotengine/godot/blob/master/core/math/vector2.cpp
     
     // Vector2 Vector2::posmod(const real_t p_mod) const {
     //     return Vector2(Math::fposmod(x, p_mod), Math::fposmod(y, p_mod));

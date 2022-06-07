@@ -8,8 +8,6 @@ import bindbc.sdl;
 import bindbc.opengl;
 import bindbc.freetype;
 
-import terramatter.core.resources.font;
-
 
 class Window {
     private static SDL_Window* _window;
@@ -121,6 +119,8 @@ class Window {
     }
 
     public static void loadLibraries() {
+        // TODO set loading for linux
+
         SDLSupport retsdl = loadSDL("../lib/SDL2.dll");
         if (retsdl != sdlSupport) {
             if (retsdl == SDLSupport.noLibrary) {

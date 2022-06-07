@@ -1,6 +1,7 @@
 {
     "dscanner.ignoredKeys": [
         "dscanner.style.phobos_naming_convention",
-        "dscanner.style.phobos_naming_convention"
+        "dscanner.style.phobos_naming_convention",
+        "dscanner.style.number_literals"
     ]
 }

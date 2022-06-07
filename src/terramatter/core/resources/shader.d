@@ -33,7 +33,7 @@ final class Shader {
     }
 
     // TODO
-    // https://learnopengl.com/code_viewer_gh.php?code=includes/learnopengl/shader.h
+    // LINK https://learnopengl.com/code_viewer_gh.php?code=includes/learnopengl/shader.h
 
     public void linkFromString(string vertex, string fragment) {
         int success;

@@ -12,7 +12,6 @@ import terramatter.core.resources.font;
 import terramatter.core.resources.texture;
 
 import terramatter.render.glwrapper;
-import terramatter.render.textrenderer;
 import terramatter.render.window;
 
 class TextRenderer {

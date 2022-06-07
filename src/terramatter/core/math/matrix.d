@@ -68,33 +68,48 @@ class Matrix(T, size_t W, size_t H) if (isNumeric!T && (W > 0 || H > 0)) {
     * UNARY OPERATIONS OVERRIDES  *
     ******************************/
     
+    // ONLY MAT +- MAT
     // opBinary x [+, -, *, /, %] y
-    auto opBinary(string op, R)(in Matrix!(R, W, H) b) const if ( isNumeric!R ) {
+    auto opBinary(string op, R)(in Matrix!(R, W, H) b) const if ( isNumeric!R  && op == "+" && op == "-") {
         MatType mat = new MatType();
         foreach (x; 0 .. W) foreach (y; 0 .. H) 
             mixin( " mat.data[x][y] = data[x][y] " ~ op ~ " b.data[x][y];" ); 
-        return  mat;
-    }
-
-    auto opBinary(string op, R)(in R b) const if ( isNumeric!R ) {
-        MatType mat = new MatType();
-        foreach (x; 0 .. W) foreach (y; 0 .. H) 
-            mixin( " mat.data[x][y] = data[x][y] " ~ op ~ " b;" ); 
         return  mat;
     }
 
     // opBinaryRight y [+, -, *, /, %] x
-    auto opBinaryRight(string op, R)(in Matrix!(R, W, H) b) const if ( isNumeric!R ) {
+    auto opBinaryRight(string op, R)(in Matrix!(R, W, H) b) const if ( isNumeric!R  && op == "+" && op == "-") {
         MatType mat = new MatType();
         foreach (x; 0 .. W) foreach (y; 0 .. H) 
-            mixin( " mat.data[x][y] = data[x][y] " ~ op ~ " b.data[x][y];" ); 
+            mixin( " mat.data[x][y] = b.data[x][y] " ~ op ~ " data[x][y];" ); 
+        return  mat;
+    }
+    
+    // ONLY MAT * MAT
+    auto opBinary(string op, R, size_t U, size_t V)(in Matrix!(R, U, V) b) const 
+        if ( isNumeric!R  && op == "*" && W == V) {
+        MatType mat = new MatType();
+        foreach (y; 0 .. H) foreach (x; 0 .. W) {
+            mat.data[x][y] = 0;
+            foreach(w; 0 .. V) {
+                mat.data[x][y] += data[x][w] * b.data[w][y];
+            }
+        }
         return  mat;
     }
 
-    auto opBinaryRight(string op, R)(in R b) const if ( isNumeric!R ) {
+    // ANY NON +- MAX ? NUMBER
+    auto opBinary(string op, R)(in R b) const if ( isNumeric!R && op != "+" && op != "-") {
         MatType mat = new MatType();
         foreach (x; 0 .. W) foreach (y; 0 .. H) 
             mixin( " mat.data[x][y] = data[x][y] " ~ op ~ " b;" ); 
+        return  mat;
+    }
+
+    auto opBinaryRight(string op, R)(in R b) const if ( isNumeric!R && op != "+" && op != "-") {
+        MatType mat = new MatType();
+        foreach (x; 0 .. W) foreach (y; 0 .. H) 
+            mixin( " mat.data[x][y] = b " ~ op ~ " data[x][y];" ); 
         return  mat;
     }
 
@@ -137,13 +152,13 @@ class Matrix(T, size_t W, size_t H) if (isNumeric!T && (W > 0 || H > 0)) {
         import std.array : appender;
         import std.conv : to;
         auto s = appender!string;
-        s ~= "[";
         static foreach (x; 0 .. W) {
+        	s ~= "[";
             foreach (y; 0 .. H) {
                 s ~= data[x][y].to!string;
-                s ~= ", ";
+                if (y != H - 1) s ~= ", ";
             }
-            s ~= "]\n[";
+            s ~= "]\n";
         }
         return s[];
     }
@@ -160,43 +175,47 @@ class Matrix(T, size_t W, size_t H) if (isNumeric!T && (W > 0 || H > 0)) {
         return buf;
     }
 
-    public void initIdentity() {
+    public MatType initIdentity() {
         // i know it looks wierd, but i'm just iterating
         initZero();
         for (int i = 0; i < W.min(H); i ++) {
             data[i][i] = 1;
         }
+        return this;
     }
 
-    public void setAll(T val) {
+    public MatType setAll(T val) {
         foreach (x; 0 .. W) foreach (y; 0 .. H) {
             data[x][y] = val;
         }
+        return this;
     }
 
-    public void initZero() { setAll(0); }
+    public MatType initZero() { return setAll(0); }
 
-    public void initOne() { setAll(1); }
+    public MatType initOne() { return setAll(1); }
 
     /******************************
     *           MATRIX4F          *
     ******************************/
     static if (W == 4 && H == 4 && isFloatingPoint!T) {
-        public void initTranslation(T tx, T ty, T tz) {
+        public MatType initTranslation(T[3] p_pos ...) {
             initIdentity();
-            data[0][3] = tx;
-            data[1][3] = ty;
-            data[2][3] = tz;
+            data[0][3] = p_pos[0];
+            data[1][3] = p_pos[1];
+            data[2][3] = p_pos[2];
+            return this;
         }
 
-        public void initScale(T tx, T ty, T tz) {
+        public MatType initScale(T[3] p_scale ...) {
             initIdentity();
-            data[0][0] = tx;
-            data[1][1] = ty;
-            data[2][2] = tz;
+            data[0][0] = p_scale[0];
+            data[1][1] = p_scale[1];
+            data[2][2] = p_scale[2];
+            return this;
         }
 
-        public void initPerspective(T fov, T aspectRatio, T zNear, T zFar) {
+        public MatType initPerspective(T fov, T aspectRatio, T zNear, T zFar) {
             T ar = aspectRatio;
             T tanHalfFOV = tan(fov / 2);
             T zRange = zNear - zFar;
@@ -207,9 +226,10 @@ class Matrix(T, size_t W, size_t H) if (isNumeric!T && (W > 0 || H > 0)) {
             data[2][2] = (-zNear -zFar)/zRange;	
             data[2][3] = 2 * zFar * zNear / zRange;
             data[3][2] = 1;
+            return this;
         }
         
-        public void initOrthographic(T left, T right, T bottom, T top, T near, T far) {
+        public MatType initOrthographic(T left, T right, T bottom, T top, T near, T far) {
             float w = (right - left);
             float h = (top - bottom);
             float depth = (far - near);
@@ -222,9 +242,10 @@ class Matrix(T, size_t W, size_t H) if (isNumeric!T && (W > 0 || H > 0)) {
             data[3][1] = -(top + bottom)/h;
             data[3][2] = -(far + near)/depth;
             data[3][3] = 1; 
+            return this;
         }
 
-        public void initRotation(T x, T y, T z) {
+        public MatType initRotation(T[3] p_rot ...) {
             MatType rx = new MatType();
             MatType ry = new MatType();
             MatType rz = new MatType();
@@ -233,24 +254,25 @@ class Matrix(T, size_t W, size_t H) if (isNumeric!T && (W > 0 || H > 0)) {
             rx.initIdentity();
             rx.initIdentity();
 
-            x = degToRad(x);
-            y = degToRad(y);
-            z = degToRad(z);
+            p_rot[0] = degToRad(p_rot[0]);
+            p_rot[1] = degToRad(p_rot[1]);
+            p_rot[2] = degToRad(p_rot[2]);
 
-            rz.data[0][0] = cos(z); rz.data[0][1] = -sin(z);
-            rz.data[1][0] = sin(z); rz.data[1][1] = cos(z);
+            rz.data[0][0] = cos(p_rot[2]); rz.data[0][1] = -sin(p_rot[2]);
+            rz.data[1][0] = sin(p_rot[2]); rz.data[1][1] = cos(p_rot[2]);
 
-            rx.data[1][1] = cos(x); rx.data[1][2] = -sin(x);
-            rx.data[2][1] = sin(x); rx.data[2][2] = cos(x);
+            rx.data[1][1] = cos(p_rot[0]); rx.data[1][2] = -sin(p_rot[0]);
+            rx.data[2][1] = sin(p_rot[0]); rx.data[2][2] = cos(p_rot[0]);
 
-            ry.data[0][0] = cos(y); ry.data[0][2] = -sin(y);
-            ry.data[2][0] = sin(y); ry.data[2][2] = cos(y);
+            ry.data[0][0] = cos(p_rot[1]); ry.data[0][2] = -sin(p_rot[1]);
+            ry.data[2][0] = sin(p_rot[1]); ry.data[2][2] = cos(p_rot[1]);
 
             MatType m = rz * ry * rx;
             data = m.data;
+            return this;
         }
         
-        public void initRotation(Vector3!T forward, Vector3!T up) {
+        public MatType initRotation(Vector3!T forward, Vector3!T up) {
             Vector3!T f = forward.normalized();
 
             Vector3!T r = up.normalized();
@@ -261,7 +283,7 @@ class Matrix(T, size_t W, size_t H) if (isNumeric!T && (W > 0 || H > 0)) {
             return initRotation(f, u, r);
         }
         
-        public void initRotation(Vector3!T forward, Vector3!T up, Vector3!T right) {
+        public MatType initRotation(Vector3!T forward, Vector3!T up, Vector3!T right) {
             Vector3!T f = forward;
             Vector3!T r = right;
             Vector3!T u = up;
@@ -270,12 +292,22 @@ class Matrix(T, size_t W, size_t H) if (isNumeric!T && (W > 0 || H > 0)) {
             data[1][0] = u.x;	data[1][1] = u.y;	data[1][2] = u.z;	data[1][3] = 0;
             data[2][0] = f.x;	data[2][1] = f.y;	data[2][2] = f.z;	data[2][3] = 0;
             data[3][0] = 0;		data[3][1] = 0;		data[3][2] = 0;		data[3][3] = 1;
+            return this;
         }
+
+        public MatType translate(T[3] p_dist ...) {return this;}
+        public MatType rotate(T p_angle, T[3] p_axis ...) {return this;}
+        public MatType scale(T[3] p_scale ...) {return this;}
         
-        public Vector3!T transform(Vector3f r) {
-            return new Vector3f(data[0][0] * r.x + data[0][1] * r.y + data[0][2] * r.z + data[0][3],
-                                data[1][0] * r.x + data[1][1] * r.y + data[1][2] * r.z + data[1][3],
-                                data[2][0] * r.x + data[2][1] * r.y + data[2][2] * r.z + data[2][3]);
-        }
+        // public Vector3!T vec3transform(Vector3f r) {
+        //     return new Vector3f(data[0][0] * r.x + data[0][1] * r.y + data[0][2] * r.z + data[0][3],
+        //                         data[1][0] * r.x + data[1][1] * r.y + data[1][2] * r.z + data[1][3],
+        //                         data[2][0] * r.x + data[2][1] * r.y + data[2][2] * r.z + data[2][3]);
+        // }
     }
+
+    // TODO
+
+    // LINK https://github.com/dexset/descore/blob/master/import/des/math/linear/matrix.d
+    // LINK https://github.com/godotengine/godot/blob/master/core/math/camera_matrix.cpp
 }

@@ -40,3 +40,7 @@ static class Input {
 	// 	return _mouseButtonsHeld[keyCode];
 	// }
 }
+
+class InputEvent {
+    
+}

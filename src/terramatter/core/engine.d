@@ -7,7 +7,6 @@ import std.conv;
 import terramatter.game.game;
 import terramatter.core.os.time;
 import terramatter.core.io.input;
-import terramatter.core.io.inputevent;
 
 import terramatter.render.renderengine;
 import terramatter.render.window;

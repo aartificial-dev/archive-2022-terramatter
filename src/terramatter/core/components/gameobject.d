@@ -6,11 +6,14 @@ import std.algorithm.mutation: remove;
 
 import terramatter.core.engine;
 import terramatter.core.math.transform;
-import terramatter.core.io.inputevent;
+import terramatter.core.io.input;
 
 import terramatter.render.renderengine;
 import terramatter.core.resources.shader;
 
+// REVIEW
+// NOTE maybe try ECS system?
+// might go well
 class GameObject {
     private string _name;
     private ulong _id;

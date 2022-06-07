@@ -7,7 +7,6 @@ import std.path;
 
 import bindbc.freetype;
 import bindbc.opengl;
-import bindbc.sdl;
 
 import terramatter.core.math.vector;
 import terramatter.core.resources.texture;
