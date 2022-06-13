@@ -7,7 +7,8 @@
 		"bindbc-freetype": "~>1.0.3",
 		"bindbc-openal": "~>1.0.0",
 		"bindbc-opengl": "~>1.0.0",
-		"bindbc-sdl": "~>1.1.2"
+		"bindbc-sdl": "~>1.1.2",
+		"dlib": "~>1.0.0"
 	},
 	"description": "A minimal D application.",
 	"license": "GNU GPL 3.0",
@@ -17,7 +18,8 @@
 		"GL_43",
 		"GL_ARB",
 		"SDL_TTF_2018",
-        "SDL_Image_205",
-        "FT_211"
+		"SDL_Image_205",
+		"SDL_2020",
+		"FT_211"
 	]
 }

@@ -83,11 +83,11 @@ class Engine {
             unprocessedTime += passedTime;
             frameCounter += passedTime;
 
-            /*************************************************
-            *     WHY IT REFERENCES CONSTANT FRAMERATE      *
-            * WHEN CLEARLY IT SHOULD GO FOR UNPROCESSEDTIME *
-            *                  INSTEAD???                   *
-            *************************************************/
+            /*┌───────────────────────────────────────────────┐  
+              │     WHY IT REFERENCES CONSTANT FRAMERATE      │  
+              │ WHEN CLEARLY IT SHOULD GO FOR UNPROCESSEDTIME │  
+              │                  INSTEAD???                   │  
+              └───────────────────────────────────────────────┘*/
 
             while (unprocessedTime > _frameTime) {
                 doNeedRender = true;
@@ -129,7 +129,7 @@ class Engine {
         Window.dispose();
     }
 
-    public RenderEngine getRenderEngine() {
+    public RenderEngine renderEngine() {
         return _renderEngine;
     }
 
@@ -139,5 +139,9 @@ class Engine {
 
     public string fpsString() {
         return _fps.to!string;
+    }
+
+    public Game game() {
+        return _game;
     }
 }

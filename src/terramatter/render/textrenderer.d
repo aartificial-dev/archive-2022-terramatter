@@ -4,9 +4,11 @@ import std.conv;
 
 import bindbc.opengl;
 
+import dlib.math.transformation;
+import dlib.math.vector;
+import dlib.math.matrix;
+
 import terramatter.core.math.color;
-import terramatter.core.math.vector;
-import terramatter.core.math.matrix;
 import terramatter.core.resources.shader;
 import terramatter.core.resources.font;
 import terramatter.core.resources.texture;
@@ -32,18 +34,15 @@ class TextRenderer {
 
         _vao.bindBuffer(_vbo);
 
-        _proj = new Matrix4f();
-        _proj.initOrthographic(0.0f, Window.getWidth, 0.0f, Window.getHeight, 1.0, -1.0);
+        _proj = orthoMatrix(0.0f, Window.width, 0.0f, Window.height, 0.0f, 1.0f);
 
         _cwhite = new Color(1.0f, 1.0f, 1.0f, 1.0f);
     }
 
     public void renderTextExt(string text, float x, float y, float xscale, float yscale, Font font, Color col) {
         // flipping Y axis to match opengl
-        y = Window.getHeight - y;
-        
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        y = Window.height - y;
+        float xx = x;
 
         _fsh.set();
 
@@ -54,20 +53,17 @@ class TextRenderer {
 
         _vao.bind();
 
-        float maxY = 0;
+        y -= font.yOffset * yscale;
 
         for (int i = 0; i < text.length; i ++) {
             FontCharacter ch = font.getCharacters[text[i]];
-            float h = ch.size.y * yscale;
-            if (h > maxY) maxY = h;
-        }
+            if (text[i] == '\n') { 
+                y -= font.yOffset * yscale;
+                xx = x;
+                continue;
+            }
 
-        y -= maxY;
-
-        for (int i = 0; i < text.length; i ++) {
-            FontCharacter ch = font.getCharacters[text[i]];
-
-            float xpos = x + ch.bearing.x * xscale;
+            float xpos = xx + ch.bearing.x * xscale;
             float ypos = y - (ch.size.y - ch.bearing.y) * yscale;
 
             float w = ch.size.x * xscale;
@@ -93,11 +89,11 @@ class TextRenderer {
             _vbo.linkSubData(0, csizeof!float(vertices), vertices.ptr);
 
             glDrawArrays(GL_TRIANGLES, 0, 6);
-            x += (ch.advance >> 6) * xscale;
+            xx += (ch.advance >> 6) * xscale;
         }
 
         _vbo.unbind();
-        Texture2D.unbindAll();
+        Texture2D.unbindType(Texture2D.TextureType.texture2D);
 
         _fsh.reset();
     }

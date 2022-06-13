@@ -82,6 +82,7 @@ class Window {
         IMG_Quit();
         TTF_Quit();
         SDL_Quit();
+        writeln();
     }
 
     public static bool isCloseRequested() {
@@ -92,18 +93,23 @@ class Window {
         this._isRequestingClose = close;
     }
 
-    public static int getWidth() {
-        return Window._width;
+    public static int width() {
+        return _width;
     }
 
-    public static int getHeight() {
-        return Window._height;
+    public static int height() {
+        return _height;
+    }
+
+    public static float aspectRatio() {
+        // return _height.to!float / _width.to!float;
+        return _width.to!float / _height.to!float;
     }
 
     public static void bindAsRenderTarget() {
         glBindTexture(GL_TEXTURE_2D, 0);
         glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
-        glViewport(0, 0, Window._width, Window._height);
+        glViewport(0, 0, _width, _height);
     }
 
     public static void setTitle(string title) {

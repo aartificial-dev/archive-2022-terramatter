@@ -5,6 +5,7 @@ out vec2 texcoords;
 uniform mat4 m_projection;
 
 void main() {
+    // gl_Position = vec4(vertex.xy, 0.0, 1.0);
     gl_Position = m_projection * vec4(vertex.xy, 0.0, 1.0);
     
     texcoords = vertex.zw; // value is interpolated so it seems like UV

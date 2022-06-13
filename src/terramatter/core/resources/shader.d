@@ -7,8 +7,8 @@ import std.stdio: writefln;
 import bindbc.opengl;
 
 import terramatter.core.os.filesystem;
-import terramatter.core.math.vector;
-import terramatter.core.math.matrix;
+import dlib.math.vector;
+import dlib.math.matrix;
 import terramatter.core.math.color;
 
 final class Shader {
@@ -148,7 +148,7 @@ final class Shader {
     }
     
     public void setVec2(string name, Vector2f value) {
-        glUniform2fv(getUniformLocation(name), 1, value.ptr);
+        glUniform2fv(getUniformLocation(name), 1, value.arrayof.ptr);
     }
 
     public void setVec2(string name, float x, float y) {
@@ -156,7 +156,7 @@ final class Shader {
     }
 
     public void setVec3(string name, Vector3f value) {
-        glUniform3fv(getUniformLocation(name), 1, value.ptr);
+        glUniform3fv(getUniformLocation(name), 1, value.arrayof.ptr);
     }
 
     public void setVec3(string name, float x, float y, float z) {
@@ -164,7 +164,7 @@ final class Shader {
     }
 
     public void setVec4(string name, Vector4f value) {
-        glUniform4fv(getUniformLocation(name), 1, value.ptr);
+        glUniform4fv(getUniformLocation(name), 1, value.arrayof.ptr);
     }
 
     public void setVec4(string name, float x, float y, float z, float w) {
@@ -172,7 +172,7 @@ final class Shader {
     }
 
     public void setCol(string name, Color value) {
-        glUniform4fv(getUniformLocation(name), 1, value.ptr);
+        glUniform4fv(getUniformLocation(name), 1, value.arrayof.ptr);
     }
 
     public void setCol(string name, float r, float g, float b, float a) {
@@ -188,7 +188,15 @@ final class Shader {
     // }
 
     public void setMat4(string name, Matrix4f value) {
-        glUniformMatrix4fv(getUniformLocation(name), 1, GL_FALSE, value.createBuffer.ptr);
+        glUniformMatrix4fv(getUniformLocation(name), 1, GL_FALSE, value.arrayof.ptr);
         // glUniformMatrix4fv(getUniformLocation(name), 1, GL_FALSE, value.getM[0].ptr);
+    }
+
+    public void setDrawMode(DrawMode mode) {
+        setInt("uDrawMode", mode);
+    }
+
+    public static enum DrawMode {
+        normal, black, normalMap, depth
     }
 }

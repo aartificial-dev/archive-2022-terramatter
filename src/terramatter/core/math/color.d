@@ -9,24 +9,37 @@ import std.uni: toLower;
 import std.array: replace;
 import std.stdio;
 
-import terramatter.core.math.vector;
+import dlib.math.vector;
 
-class Color: Vector!(float, 4) {
+import terramatter.meta.meta;
+
+class Color {
+    public float[4] data;
+
+    alias data this;
+    alias arrayof = data;
 
     this() {
-        super();
+        foreach (i; 0 .. 4) { data[i] = float.init; }
     }
 
     this(in float val) {
-        super(val);
+        foreach (i; 0 .. 4) { data[i] = val; }
     }
 
     this(in float[4] vals...) {
-        super(vals);
+        data = vals;
     }
+    
+    // incredible magic from terramatter.meta.meta
+    // idk how it works but it works awesome
+    // and im not going to touch it at all
+    enum AccessString = "r g b a";
+    mixin accessByString!(4, float, "data", AccessString);
+    
 
     public Vector4f toVec4() {
-        return new Vector4f(data);
+        return Vector4f(data);
     }
 
     public Color copyof() {

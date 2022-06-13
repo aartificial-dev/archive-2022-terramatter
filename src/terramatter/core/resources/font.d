@@ -4,11 +4,12 @@ import std.string: toStringz;
 import std.stdio;
 import std.conv;
 import std.path;
+import std.algorithm.comparison: max;
 
 import bindbc.freetype;
 import bindbc.opengl;
 
-import terramatter.core.math.vector;
+import dlib.math.vector;
 import terramatter.core.resources.texture;
 
 final class Font {
@@ -16,6 +17,9 @@ final class Font {
     private FontCharacter[char] _characters;
 
     private static FT_Library _lib;
+
+    private float yoffset = 0;
+    public float yOffset() { return yoffset; }
 
     this(string fontPath, int fontSize) {
         initLibrary();
@@ -41,7 +45,7 @@ final class Font {
                 writeln("Failed to load Glyph");
                 continue;
             }
-
+            // TODO make atlas
             Texture2D tex = new Texture2D();
             
             tex.setBitmap(
@@ -57,10 +61,12 @@ final class Font {
             tex.setFilter(GL_LINEAR, GL_LINEAR);
             tex.setWrap(GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE);
             
+            yoffset = yoffset.max(_font.glyph.bitmap.rows);
+
             FontCharacter ch = {
                 texture: tex,
-                size: new Vector2i(_font.glyph.bitmap.width, _font.glyph.bitmap.rows),
-                bearing: new Vector2i(_font.glyph.bitmap_left, _font.glyph.bitmap_top),
+                size: Vector2i(_font.glyph.bitmap.width, _font.glyph.bitmap.rows),
+                bearing: Vector2i(_font.glyph.bitmap_left, _font.glyph.bitmap_top),
                 advance: _font.glyph.advance.x.to!uint
             };
             _characters[c] = ch;

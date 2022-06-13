@@ -3,8 +3,11 @@ module terramatter.render.glwrapper;
 import bindbc.opengl;
 
 import std.conv;
+import std.stdio;
 
 import terramatter.core.resources.texture;
+
+import terramatter.core.io.error;
 
 template csizeof(T) {
     uint csizeof(int var) {
@@ -23,6 +26,22 @@ template csizeof(T) {
 
 void* vptr(uint i) {
     return cast(void*) i;
+}
+
+void checkglErrors() {
+    GLenum err;
+    while ( (err = glGetError()) != GL_NO_ERROR ) {
+        switch (err) {
+            case GL_INVALID_ENUM: ErrLog.queueError("OPENGL::ERROR 1280 Invalid enum"); break;
+            case GL_INVALID_VALUE: ErrLog.queueError("OPENGL::ERROR 1281 Invalid value"); break;
+            case GL_INVALID_OPERATION: ErrLog.queueError("OPENGL::ERROR 1282 Invalid operation"); break;
+            case GL_STACK_OVERFLOW: ErrLog.queueError("OPENGL::ERROR 1283 Stack overflow"); break;
+            case GL_STACK_UNDERFLOW: ErrLog.queueError("OPENGL::ERROR 1284 Stack underflow"); break;
+            case GL_OUT_OF_MEMORY: ErrLog.queueError("OPENGL::ERROR 1285 Out of memeory"); break;
+            case GL_INVALID_FRAMEBUFFER_OPERATION: ErrLog.queueError("OPENGL::ERROR 1286 Invalid framebuffer op"); break;
+            default: ErrLog.queueError("OPENGL::ERROR Unknown error code"); break;
+        }
+    }
 }
 
 final class VBO {
@@ -84,6 +103,16 @@ final class VAO {
         return _id;
     }
 
+    /** 
+     * 
+     * Params:
+     *   vbo = VBO to link attribute of
+     *   layout = Position of attribute in array. `layout (location = %layout%)` in shader
+     *   numComponents = Number of elements of array to use for attribute (e.g. 3 for vec3)
+     *   dataType = Type of data in array
+     *   stride = How much elements will be in the end (e.g. pos + col + uv = 3 + 3 + 2)
+     *   offset = How much array elements preceeds this attribute. Recommended to use `csizeof!T(len).vptr`
+     */
     public void linkAttribute(VBO vbo, uint layout, int numComponents, 
                               GLenum dataType, int stride, const void* offset) {
         bind();
@@ -94,24 +123,35 @@ final class VAO {
         vbo.unbind();
     }
 
+    private const int attrSize = 3 + 3 + 2 + 3;
     // For 2D textures it's always should be:
-    // XYZ RGB ST(XY of texture)
+    // XYZ RGB UV
     public void linkTex2Dpos(VBO vbo) {
-        linkAttribute(vbo, 0, 3, GL_FLOAT, csizeof!float(8), csizeof!float(0).vptr);
+        linkAttribute(vbo, 0, 3, GL_FLOAT, csizeof!float(attrSize), csizeof!float(0).vptr);
     }
 
     public void linkTex2Dcol(VBO vbo) {
-        linkAttribute(vbo, 1, 3, GL_FLOAT, csizeof!float(8), csizeof!float(3).vptr);
+        linkAttribute(vbo, 1, 3, GL_FLOAT, csizeof!float(attrSize), csizeof!float(3).vptr);
     }
 
     public void linkTex2DtexPos(VBO vbo) {
-        linkAttribute(vbo, 2, 2, GL_FLOAT, csizeof!float(8), csizeof!float(6).vptr);
+        linkAttribute(vbo, 2, 2, GL_FLOAT, csizeof!float(attrSize), csizeof!float(6).vptr);
     }
+
+    public void linkTex2Dnorm(VBO vbo) {
+        linkAttribute(vbo, 3, 3, GL_FLOAT, csizeof!float(attrSize), csizeof!float(8).vptr);
+    }
+
+    // public void linkTex2DtexIdx(VBO vbo) {
+    //     linkAttribute(vbo, 3, 1, GL_FLOAT, csizeof!float(9), csizeof!float(7).vptr);
+    // }
 
     public void linkTex2Ddefault(VBO vbo) {
         linkTex2Dpos(vbo);
         linkTex2Dcol(vbo);
         linkTex2DtexPos(vbo);
+        linkTex2Dnorm(vbo);
+        // linkTex2DtexIdx(vbo);
     }
 
     public void bind() {
@@ -216,17 +256,15 @@ class VertexArray {
     public void linkAttribute(uint layout, int numComponents, GLenum dataType, int stride, void* offset) {
         _vao.bind();
         _vao.linkAttribute(_vbo, layout, numComponents, dataType, stride, offset);
-        _vao.unbind();
+        _vao.unbind(); 
     }
 
     public void linkTex2Ddefault() {
         _vao.linkTex2Ddefault(_vbo);
     }
 
-    public void render(GLenum type, int vertAmmount, void delegate() uniform = null) {
+    public void render(GLenum type, int vertAmmount) {
         _vao.bind();
-
-        if (uniform !is null) uniform();
 
         // last 0 is used if ebo is not in use 
         glDrawElements(type, vertAmmount, GL_UNSIGNED_INT, cast(GLvoid*) 0);
@@ -256,4 +294,9 @@ class VertexArray {
     public VBO vbo() { return _vbo; }
     public VAO vao() { return _vao; }
     public EBO ebo() { return _ebo; }
+}
+
+struct VAElements {
+    float[] vertices;
+    uint[] indices;
 }

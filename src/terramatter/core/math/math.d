@@ -8,13 +8,16 @@ import std.traits;
 
 // https://github.com/godotengine/godot/blob/master/core/math/math_funcs.cpp
 
-float degToRad(float deg) {
-    return deg * (PI / 180.0f);
-}
+// float degToRad(float deg) {
+//     return deg * (PI / 180.0f);
+// }
 
-float radToDeg(float rad) {
-    return rad * (180.0f / PI);
-}
+// float radToDeg(float rad) {
+//     return rad * (180.0f / PI);
+// }
+
+// alias deg2rad = degToRad;
+// alias rad2deg = radToDeg;
 
 alias lerp = lerpT!float;
 alias lerp = lerpT!real;
