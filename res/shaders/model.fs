@@ -42,7 +42,7 @@ void drawNormal() {
     // depth = depth * 0.5 + 0.5;
     depth = max(0.0, min(1.0, depth));
     depth = smoothstep(0.0, 1.0, depth);
-    vec4 shading = vec4(vec3(dot(Normal, vec3(0.2, 1.0, 0.0)) * 0.5 + 0.5), 1.0);
+    vec4 shading = vec4(vec3(max(0.4, dot(Normal, vec3(0.2, 1.0, 0.0)) * 0.5 + 0.5)), 1.0);
     vec4 texColor = texture(Texture0, TexCoord);
     vec4 vertColor = vec4(VertexColor, 1.0);
     FragColor = mix(texColor * shading * vertColor, vec4(uClearCol, 1.0), depth);

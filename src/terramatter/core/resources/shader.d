@@ -155,7 +155,7 @@ final class Shader {
         glUniform2f(getUniformLocation(name), x, y);
     }
 
-    public void setVec3(string name, Vector3f value) {
+    public void setVec3(string name, vec3 value) {
         glUniform3fv(getUniformLocation(name), 1, value.arrayof.ptr);
     }
 

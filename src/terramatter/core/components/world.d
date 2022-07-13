@@ -14,28 +14,28 @@ import terramatter.core.components.blocks.air;
 
 final class World {
     private Chunk[][][] _chunks = uninitializedArray!(Chunk[][][])(14, 14, 14);
-    private Vector3i _chunkSize;
+    private ivec3 _chunkSize;
 
-    this(Vector3i chunkAmount) {
+    this(ivec3 chunkAmount) {
         _chunkSize = chunkAmount;
         // allocate();
 
         foreach (x; 0 .. _chunkSize.x) 
         foreach (z; 0 .. _chunkSize.y) 
         foreach (y; 0 .. _chunkSize.z) 
-            _chunks[x][y][z] = new Chunk(Vector3i(x, y, z), this);
+            _chunks[x][y][z] = new Chunk(ivec3(x, y, z), this);
 
         update();
     }
 
-    this(Vector3i chunkAmount, Block delegate(Vector3i chunkPos, Vector3i blockPos) generator) {
+    this(ivec3 chunkAmount, Block delegate(ivec3 chunkPos, ivec3 blockPos) generator) {
         _chunkSize = chunkAmount;
         // allocate();
 
         foreach (x; 0 .. _chunkSize.x) 
         foreach (z; 0 .. _chunkSize.y) 
         foreach (y; 0 .. _chunkSize.z) 
-            _chunks[x][y][z] = new Chunk(Vector3i(x, y, z), this, generator);
+            _chunks[x][y][z] = new Chunk(ivec3(x, y, z), this, generator);
         
         update();
     }
@@ -61,14 +61,14 @@ final class World {
             _chunks[x][y][z].dispose();
     }
 
-    // public Chunk getChunk(Vector3i pos) {
+    // public Chunk getChunk(ivec3 pos) {
     //     pos.x = clamp(pos.x, 0, _chunkSize.x - 1);
     //     pos.y = clamp(pos.y, 0, _chunkSize.y - 1);
     //     pos.z = clamp(pos.z, 0, _chunkSize.z - 1);
     //     return _chunks[pos.x][pos.y][pos.z];
     // }
 
-    public Block getBlock(Vector3i chunkPos, Vector3i blockPos) {
+    public Block getBlock(ivec3 chunkPos, ivec3 blockPos) {
         // GET ADJACENT CHUNK
         if (chunkPos.x < 0 || chunkPos.y < 0 || chunkPos.z < 0 || 
             chunkPos.x >= _chunkSize.x || 
@@ -78,7 +78,7 @@ final class World {
         return _chunks[chunkPos.x][chunkPos.y][chunkPos.z].getBlock(blockPos);
     }
 
-    // public void resize(Vector3i chunkAmount) {
+    // public void resize(ivec3 chunkAmount) {
     //     deallocate();
     //     _chunkSize = chunkAmount;
     //     allocate();

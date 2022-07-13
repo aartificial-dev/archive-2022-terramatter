@@ -198,15 +198,15 @@ class GameObject {
         _transform = tr;
     }
 
-    public final void translate(Vector3f offset) {
+    public final void translate(vec3 offset) {
         transform.translate(offset);
     }
 
-    public final void scale(Vector3f offset) {
+    public final void scale(vec3 offset) {
         transform.scale(offset);
     }
 
-    public final void rotate(Vector3f v) {
+    public final void rotate(vec3 v) {
         auto r =
             rotationQuaternion!float(Axis.x, degtorad(v.x)) *
             rotationQuaternion!float(Axis.y, degtorad(v.y)) *

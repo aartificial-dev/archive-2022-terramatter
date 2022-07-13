@@ -195,6 +195,12 @@ final class Texture2D {
     //     // SDL_CreateRGBSurfaceFrom
     // }
 
+    /** 
+     * Loads image from `path` into `SDL_Surface`
+     * Params:
+     *   path = Path to image
+     * Returns: Flipped `SDL_Surface`
+     */
     public SDL_Surface* loadSurface(string path) {
         path = path.absolutePath.buildNormalizedPath;
         SDL_Surface* img = IMG_Load(path.toStringz);
@@ -252,6 +258,11 @@ final class Texture2D {
         unbind();
     }
 
+    /** 
+     * Loads png surface into current texture
+     * Params:
+     *   path = Path to image
+     */
     public void loadFile(string path) {
         SDL_Surface* img = loadSurface(path);
 
@@ -263,6 +274,17 @@ final class Texture2D {
         SDL_FreeSurface(img); 
     }
 
+    /** 
+     * Sets pixeldata for current texture
+     * Params:
+     *   genMipmaps = Do generate mipmaps
+     *   numComponents = Components (rgba) stored (internal), use `GL_RGBA`
+     *   width = Width of texture
+     *   height = Height of texture
+     *   rgbFormat = Components (rgba) stored, use `GL_RGBA`
+     *   dataType = Data array format type
+     *   data = Pixel data to bind
+     */
     public void setBitmap(bool genMipmaps, uint numComponents, uint width, uint height, 
                    int rgbFormat, GLenum dataType, GLvoid* data) {
         bind();
@@ -327,33 +349,62 @@ final class Texture2D {
         unbind();
     }
 
+    /** 
+     * Sets border color with border wrapping
+     * Params:
+     *   col = Color to set border
+     */
     public void setBorderColor(Color col) {
         bind();
         glTexParameterfv(glType(_textureType), GL_TEXTURE_BORDER_COLOR, col.arrayof.ptr);
         unbind();  
     }
 
+    /** 
+     * Binds current texture to GL_TEXTURE0
+     */
     public void bind() {
         bindTo(GL_TEXTURE0);
     }
 
+    /** 
+     * Binds current texture to `textureidx`
+     * Params:
+     *   textureidx = Texture index to bind to
+     */
     public void bindTo(GLenum textureidx) {
         glActiveTexture(textureidx);
         glBindTexture(glType(_textureType), _id);
     }
 
+    /** 
+     * Binds current texture to 0
+     */
     public void unbind() {
         glBindTexture(glType(_textureType), 0);
     }
 
+
+    /** 
+     * Binds current texture to 0
+     * Params:
+     *   type = Type of texture to unbind
+     */
     public static void unbindType(TextureType type) {
         glBindTexture(glType(type), 0);
     }
 
+    /** 
+     * Deletes this texture from memory 
+     */
     public void dispose() {
         glDeleteTextures(0, &_id);
     }
 
+    /** 
+     * 
+     * Returns: texture at default path
+     */
     public static Texture2D defaultTexture() {
         if (_defaultTexture is null) {
             _defaultTexture = new Texture2D("res/textures/default.png");
@@ -370,6 +421,11 @@ final class Texture2D {
     public uint width() { return _w; }
     public uint height() { return _h; }
 
+    /** 
+     * Flips SDL surface
+     * Params:
+     *   surface = Surface to flip
+     */
     private void flipSurface(SDL_Surface* surface) {
         SDL_LockSurface(surface);
         
@@ -390,20 +446,37 @@ final class Texture2D {
 
         SDL_UnlockSurface(surface);
     }
-
+    
+    /** 
+     * Copies array
+     * Params:
+     *   destination = Pointer to destination array where the content is to be copied
+     *   source = Pointer to the source of data to be copied
+     *   num = Number of bytes to copy
+     * Returns: `destination`
+     */
     void * dmemcpy ( void * destination, const void * source, size_t num ) pure nothrow {
         (cast(ubyte*)destination)[0 .. num][]=(cast(const(ubyte)*)source)[0 .. num];
         return destination;
     }
 
+    /** 
+     * Checks for any SDL errors and logs them if they occur
+     */
     void checkErrors() {
         const char *error = SDL_GetError();
         if (*error) {
-        SDL_Log("SDL::ERROR %s", error);
-        SDL_ClearError();
+            SDL_Log("SDL::ERROR %s", error);
+            SDL_ClearError();
         }
     }
 
+    /** 
+     * Wrapping between engine and opengl
+     * Params:
+     *   type = Texture type
+     * Returns: OpenGL TextureType enum
+     */
     private static GLenum glType(TextureType type) {
         switch (type) {
             case TextureType.texture2D:

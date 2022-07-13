@@ -81,7 +81,7 @@ class Mesh {
      *   varr = pointer to array of vertices
      *   iarr = pointer to array of indices
      */
-    public static void generateFace(float[12] arr, Vector3f norm, uint stx, TextureRegion reg, ref float[] varr, ref uint[] iarr) {
+    public static void generateFace(float[12] arr, vec3 norm, uint stx, TextureRegion reg, ref float[] varr, ref uint[] iarr) {
         float u = reg.u;
         float v = reg.v;
         float w = reg.u + reg.uvw;
@@ -114,7 +114,7 @@ class Mesh {
      *   stx = Block index (number of block in varr before)
      * `[north, south, east, west, up, down]`
      */
-    public static void generateBlock(TextureRegion[] reg, Vector3f p, ref float[] varr, ref uint[] iarr, uint stx = 0) {
+    public static void generateBlock(TextureRegion[] reg, vec3 p, ref float[] varr, ref uint[] iarr, uint stx = 0) {
         stx *= 6;
         uint i = 0;
         genFaceNorth(reg[i++], p, varr, iarr, stx++);
@@ -125,64 +125,64 @@ class Mesh {
         genFaceDown(reg[i++], p, varr, iarr, stx++);
     }
 
-    public static void genFaceNorth(TextureRegion reg, Vector3f p, ref float[] varr, ref uint[] iarr, uint stx = 0) {
+    public static void genFaceNorth(TextureRegion reg, vec3 p, ref float[] varr, ref uint[] iarr, uint stx = 0) {
         // north -z
         generateFace([
             p.x + 1.0f, p.y + 1.0f, p.z + 0.0f,
             p.x + 1.0f, p.y + 0.0f, p.z + 0.0f,
             p.x + 0.0f, p.y + 0.0f, p.z + 0.0f,
             p.x + 0.0f, p.y + 1.0f, p.z + 0.0f
-        ], Vector3f(0.0f, 0.0f, -1.0f), stx, reg, varr, iarr);
+        ], vec3(0.0f, 0.0f, -1.0f), stx, reg, varr, iarr);
     }
 
-    public static void genFaceSouth(TextureRegion reg, Vector3f p, ref float[] varr, ref uint[] iarr, uint stx = 0) {
+    public static void genFaceSouth(TextureRegion reg, vec3 p, ref float[] varr, ref uint[] iarr, uint stx = 0) {
         // south +z
         generateFace([
             p.x + 0.0f, p.y + 1.0f, p.z + 1.0f,
             p.x + 0.0f, p.y + 0.0f, p.z + 1.0f,
             p.x + 1.0f, p.y + 0.0f, p.z + 1.0f,
             p.x + 1.0f, p.y + 1.0f, p.z + 1.0f
-        ], Vector3f(0.0f, 0.0f, +1.0f), stx, reg, varr, iarr);
+        ], vec3(0.0f, 0.0f, +1.0f), stx, reg, varr, iarr);
     }
 
-    public static void genFaceEast(TextureRegion reg, Vector3f p, ref float[] varr, ref uint[] iarr, uint stx = 0) {
+    public static void genFaceEast(TextureRegion reg, vec3 p, ref float[] varr, ref uint[] iarr, uint stx = 0) {
         // east +x
         generateFace([
             p.x + 1.0f, p.y + 1.0f, p.z + 1.0f,
             p.x + 1.0f, p.y + 0.0f, p.z + 1.0f,
             p.x + 1.0f, p.y + 0.0f, p.z + 0.0f,
             p.x + 1.0f, p.y + 1.0f, p.z + 0.0f
-        ], Vector3f(+1.0f, 0.0f, 0.0f), stx, reg, varr, iarr);
+        ], vec3(+1.0f, 0.0f, 0.0f), stx, reg, varr, iarr);
     }
 
-    public static void genFaceWest(TextureRegion reg, Vector3f p, ref float[] varr, ref uint[] iarr, uint stx = 0) {
+    public static void genFaceWest(TextureRegion reg, vec3 p, ref float[] varr, ref uint[] iarr, uint stx = 0) {
         // west -x
         generateFace([
             p.x + 0.0f, p.y + 1.0f, p.z + 0.0f,
             p.x + 0.0f, p.y + 0.0f, p.z + 0.0f,
             p.x + 0.0f, p.y + 0.0f, p.z + 1.0f,
             p.x + 0.0f, p.y + 1.0f, p.z + 1.0f
-        ], Vector3f(-1.0f, 0.0f, 0.0f), stx, reg, varr, iarr);
+        ], vec3(-1.0f, 0.0f, 0.0f), stx, reg, varr, iarr);
     }
 
-    public static void genFaceUp(TextureRegion reg, Vector3f p, ref float[] varr, ref uint[] iarr, uint stx = 0) {
+    public static void genFaceUp(TextureRegion reg, vec3 p, ref float[] varr, ref uint[] iarr, uint stx = 0) {
         // up +y
         generateFace([
             p.x + 1.0f, p.y + 1.0f, p.z + 1.0f,
             p.x + 1.0f, p.y + 1.0f, p.z + 0.0f,
             p.x + 0.0f, p.y + 1.0f, p.z + 0.0f,
             p.x + 0.0f, p.y + 1.0f, p.z + 1.0f
-        ], Vector3f(0.0f, +1.0f, 0.0f), stx, reg, varr, iarr);
+        ], vec3(0.0f, +1.0f, 0.0f), stx, reg, varr, iarr);
     }
 
-    public static void genFaceDown(TextureRegion reg, Vector3f p, ref float[] varr, ref uint[] iarr, uint stx = 0) {
+    public static void genFaceDown(TextureRegion reg, vec3 p, ref float[] varr, ref uint[] iarr, uint stx = 0) {
         // down -y
         generateFace([
             p.x + 1.0f, p.y + 0.0f, p.z + 0.0f,
             p.x + 1.0f, p.y + 0.0f, p.z + 1.0f,
             p.x + 0.0f, p.y + 0.0f, p.z + 1.0f,
             p.x + 0.0f, p.y + 0.0f, p.z + 0.0f
-        ], Vector3f(0.0f, -1.0f, 0.0f), stx, reg, varr, iarr);
+        ], vec3(0.0f, -1.0f, 0.0f), stx, reg, varr, iarr);
     }
 
     public Mesh setShader(Shader sh) {

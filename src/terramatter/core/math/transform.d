@@ -9,15 +9,15 @@ import dlib.math.utils;
 class Transform {
     private Matrix4f _transformMat;
 
-    private Vector3f _position;
-    private Vector3f _scaling;
+    private vec3 _position;
+    private vec3 _scaling;
     private Quaternionf _rotation;
 
     this() {
         _transformMat = Matrix4f().identity();
 
-        _position = Vector3f(0, 0, 0);
-        _scaling = Vector3f(1, 1, 1);
+        _position = vec3(0, 0, 0);
+        _scaling = vec3(1, 1, 1);
         _rotation = Quaternionf().identity();
     }
 
@@ -30,19 +30,19 @@ class Transform {
         // _transformMat = _scaleMat * _rotationMat * _translationMat;
     }
 
-    public void position(Vector3f pos) {
+    public void position(vec3 pos) {
         _position = pos;
     }
 
-    public Vector3f position() {
+    public vec3 position() {
         return _position;
     }
 
-    public void scaling(Vector3f p_scale) {
+    public void scaling(vec3 p_scale) {
         _scaling = p_scale;
     }
 
-    public Vector3f scaling() {
+    public vec3 scaling() {
         return _scaling;
     }
 
@@ -72,23 +72,23 @@ class Transform {
         // updateAbsoluteTransformation();
     }
 
-    Vector3f direction() {
+    vec3 direction() {
         return forward(_transformMat);
     }
 
-    // Vector3f right() {
+    // vec3 right() {
     //     return right(_transformMat);
     // }
 
-    // Vector3f up() {
+    // vec3 up() {
     //     return right(_transformMat);
     // }
 
-    public final void translate(Vector3f offset) {
+    public final void translate(vec3 offset) {
         _position += offset;
     }
 
-    public final void scale(Vector3f offset) {
+    public final void scale(vec3 offset) {
         // transform.position = transform.position + offset;
     }
     
@@ -97,7 +97,7 @@ class Transform {
      * Params:
      *   v = Vector (degrees)
      */
-    void setRotation(Vector3f v) {
+    void setRotation(vec3 v) {
         _rotation =
             rotationQuaternion!float(Axis.x, degtorad(v.x)) *
             rotationQuaternion!float(Axis.y, degtorad(v.y)) *
@@ -112,7 +112,7 @@ class Transform {
      *   z = z angle degrees
      */
     void setRotation(float x, float y, float z) {
-        setRotation(Vector3f(x, y, z));
+        setRotation(vec3(x, y, z));
     }
 
     /** 
@@ -120,7 +120,7 @@ class Transform {
      * Params:
      *   v = Vector (degrees)
      */
-    void rotate(Vector3f v) {
+    void rotate(vec3 v) {
         auto r =
             rotationQuaternion!float(Axis.x, degtorad(v.x)) *
             rotationQuaternion!float(Axis.y, degtorad(v.y)) *
@@ -136,7 +136,7 @@ class Transform {
      *   z = z angle degrees
      */
     void rotate(float x, float y, float z) {
-        rotate(Vector3f(x, y, z));
+        rotate(vec3(x, y, z));
     }
 
     /** 

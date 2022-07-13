@@ -53,7 +53,7 @@ final class RenderEngine {
     Mesh mesh;
     Mesh plane;
 
-    World world;
+    public World world;
 
     VertexArray vaTriangle;
     VertexArray vaBlock;
@@ -81,8 +81,8 @@ final class RenderEngine {
 
         TextureAtlas.generateAtlas("res/textures/blocks", "blocks", 2048, 2);
         
-        world = new World(Vector3i(4, 4, 4), 
-            delegate Block(Vector3i c, Vector3i p) {
+        world = new World(ivec3(4, 4, 4), 
+            delegate Block(ivec3 c, ivec3 p) {
                 int offset = (sin((c.x * 16.0 + p.x) / 8.0f) * 4.0f).to!int + 
                              (cos((c.z * 16.0 + p.z) / 8.0f) * 4.0f).to!int;
                 if (c.y * 16 + p.y + offset > 28) return new Air();
@@ -178,15 +178,15 @@ final class RenderEngine {
     public void renderWorld(GameObject p_root) {
         sh.setDrawMode(drawMode);
 
-        sh.setMat4("m_transform", translationMatrix(Vector3f(0.0f, -1.0f, 0.0f)));
+        sh.setMat4("m_transform", translationMatrix(vec3(0.0f, -1.0f, 0.0f)));
         plane.render();
-        // sh.setMat4("m_transform", translationMatrix(Vector3f(0.0f, 0.0f, 0.0f)));
+        // sh.setMat4("m_transform", translationMatrix(vec3(0.0f, 0.0f, 0.0f)));
         // vaTriangle.renderTexture2D(GL_TRIANGLES, 3, quadTex);
 
-        // sh.setMat4("m_transform", translationMatrix(Vector3f(0.0f, 0.0f, -1.0f)));
+        // sh.setMat4("m_transform", translationMatrix(vec3(0.0f, 0.0f, -1.0f)));
         // mesh.render();
 
-        // sh.setMat4("m_transform", translationMatrix(Vector3f(0.0f, 0.0f, 0.0f)));
+        // sh.setMat4("m_transform", translationMatrix(vec3(0.0f, 0.0f, 0.0f)));
         // blockTex[0].bindTo(GL_TEXTURE0);
         // blockTex[1].bindTo(GL_TEXTURE1);
         // blockTex[2].bindTo(GL_TEXTURE2);
@@ -213,13 +213,15 @@ final class RenderEngine {
                 10.0f, 10.0f + 25.0f * yof++, _font);
             _textRenderer.renderText("dir: " ~ lookingDirection, 10.0f, 10.0f + 25.0f * yof++, _font);
             _textRenderer.renderText("rndist: " ~ _renderDistance.to!string, 10.0f, 10.0f + 25.0f * yof++, _font);
+            _textRenderer.renderText("mode: " ~ drawMode.to!string, 10.0f, 10.0f + 25.0f * yof++, _font);
+            _textRenderer.renderText("wire: " ~ _doDrawWireframe.to!string, 10.0f, 10.0f + 25.0f * yof++, _font);
             // _textRenderer.renderText(_engine.game.camera.viewMatrix.toString, 10.0f, 10.0f + 25.0f * yof++, _font); yof += 4;
             // _textRenderer.renderText(projMatrix.toString, 10.0f, 10.0f + 25.0f * yof++, _font);
         }
     }
 
     private string lookingDirection() {
-        return (_engine.game.camera.transform.rotation * Vector3f(0.0f, 0.0f, -1.0f)).arrayof.toStringf(1);
+        return (_engine.game.camera.transform.rotation * vec3(0.0f, 0.0f, -1.0f)).arrayof.toStringf(1);
     }
 
     public void render(GameObject p_root) {
@@ -244,7 +246,8 @@ final class RenderEngine {
         // glDepthMask(false);
         glDepthFunc(GL_LEQUAL);
         
-        skybox.shader.setMat4("m_viewMatrix", matrix3x3to4x4(matrix4x4to3x3(_engine.game.camera.viewMatrix)));
+        skybox.shader.setMat4("m_viewMatrix", _engine.game.camera.viewMatrix);
+        // skybox.shader.setMat4("m_viewMatrix", matrix3x3to4x4(matrix4x4to3x3(_engine.game.camera.viewMatrix)));
         skybox.shader.setMat4("m_projMatrix", projMatrix);
 
         skybox.render();
@@ -296,14 +299,16 @@ final class RenderEngine {
 
     public void preRender() {
 
-        glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+        glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+        // glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        glEnable(GL_CULL_FACE);
-        glFrontFace(GL_CW);
-        glCullFace(GL_BACK);
+        // glEnable(GL_CULL_FACE);
+        // glFrontFace(GL_CW);
+        // glCullFace(GL_BACK);
         
         // glEnable(GL_MULTISAMPLE);
+        glDisable(GL_MULTISAMPLE); // disabled to fix mipmaps
         
         glEnable(GL_DEPTH_TEST);
         glDepthFunc(GL_LESS);

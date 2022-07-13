@@ -23,7 +23,7 @@ final class Chunk {
     public static const byte CHUNK_SIZE = 16;
 
     private Block[CHUNK_SIZE][CHUNK_SIZE][CHUNK_SIZE] _blocks;
-    private Vector3i _chunkPosition;
+    private ivec3 _chunkPosition;
     private World _world;
 
     private VertexArray _va;
@@ -32,7 +32,7 @@ final class Chunk {
     private bool _isEmpty = true;
     public bool isEmpty() { return _isEmpty; }
 
-    this(Vector3i chunkPos, World world) {
+    this(ivec3 chunkPos, World world) {
         _chunkPosition = chunkPos;
         _world = world;
 
@@ -42,7 +42,7 @@ final class Chunk {
             _blocks[x][y][z] = new Air();
     }
 
-    this(Vector3i chunkPos, World world, Block delegate(Vector3i chunkPos, Vector3i blockPos) generator) {
+    this(ivec3 chunkPos, World world, Block delegate(ivec3 chunkPos, ivec3 blockPos) generator) {
         _chunkPosition = chunkPos;
         _world = world;
 
@@ -51,7 +51,7 @@ final class Chunk {
         foreach (x; 0 .. CHUNK_SIZE) 
         foreach (z; 0 .. CHUNK_SIZE) 
         foreach (y; 0 .. CHUNK_SIZE) {
-            _blocks[x][y][z] = generator(_chunkPosition, Vector3i(x, y, z));
+            _blocks[x][y][z] = generator(_chunkPosition, ivec3(x, y, z));
             if (!_blocks[x][y][z].isBlock!Air) _isEmpty = false;
         }
     }
@@ -70,7 +70,7 @@ final class Chunk {
         foreach (z; 0 .. CHUNK_SIZE) 
         foreach (y; 0 .. CHUNK_SIZE) {
             Block bl = _blocks[x][y][z];
-            Vector3f pos = Vector3f(x.to!float, y.to!float, z.to!float);
+            vec3 pos = vec3(x.to!float, y.to!float, z.to!float);
             if (bl.isBlock!Air) continue;
             if (_isEmpty) _isEmpty = false;
             // Mesh.generateBlock([
@@ -79,17 +79,17 @@ final class Chunk {
             //     bl.textureTop, bl.textureBottom
             //     ], pos, vert, indx, i++);
 
-            if (getBlock(Vector3i(x, y, z - 1)).isBlock!Air) 
+            if (getBlock(ivec3(x, y, z - 1)).isBlock!Air) 
                 Mesh.genFaceNorth(bl.textureFront, pos, vert, indx, i++);
-            if (getBlock(Vector3i(x, y, z + 1)).isBlock!Air) 
+            if (getBlock(ivec3(x, y, z + 1)).isBlock!Air) 
                 Mesh.genFaceSouth(bl.textureBack, pos, vert, indx, i++);
-            if (getBlock(Vector3i(x - 1, y, z)).isBlock!Air) 
+            if (getBlock(ivec3(x - 1, y, z)).isBlock!Air) 
                 Mesh.genFaceWest(bl.textureLeft, pos, vert, indx, i++);
-            if (getBlock(Vector3i(x + 1, y, z)).isBlock!Air) 
+            if (getBlock(ivec3(x + 1, y, z)).isBlock!Air) 
                 Mesh.genFaceEast(bl.textureRight, pos, vert, indx, i++);
-            if (getBlock(Vector3i(x, y - 1, z)).isBlock!Air) 
+            if (getBlock(ivec3(x, y - 1, z)).isBlock!Air) 
                 Mesh.genFaceDown(bl.textureBottom, pos, vert, indx, i++);
-            if (getBlock(Vector3i(x, y + 1, z)).isBlock!Air) 
+            if (getBlock(ivec3(x, y + 1, z)).isBlock!Air) 
                 Mesh.genFaceUp(bl.textureTop, pos, vert, indx, i++);
         }
         
@@ -106,26 +106,26 @@ final class Chunk {
 
     }
 
-    public void setBlock(Vector3i pos, Block block) {
+    public void setBlock(ivec3 pos, Block block) {
         _blocks[pos.x][pos.y][pos.z] = block;
         update();
     }
 
-    public Block getBlock(Vector3i pos) {
+    public Block getBlock(ivec3 pos) {
         if (_isEmpty) return new Air();
         // GET ADJACENT CHUNK
         if (pos.x < 0) 
-            return _world.getBlock(_chunkPosition + Vector3i(-1, 0, 0), pos + Vector3i(CHUNK_SIZE, 0, 0));
+            return _world.getBlock(_chunkPosition + ivec3(-1, 0, 0), pos + ivec3(CHUNK_SIZE, 0, 0));
         if (pos.x >= CHUNK_SIZE) 
-            return _world.getBlock(_chunkPosition + Vector3i(1, 0, 0), pos + Vector3i(-CHUNK_SIZE, 0, 0));
+            return _world.getBlock(_chunkPosition + ivec3(1, 0, 0), pos + ivec3(-CHUNK_SIZE, 0, 0));
         if (pos.y < 0)
-            return _world.getBlock(_chunkPosition + Vector3i(0, -1, 0), pos + Vector3i(0, CHUNK_SIZE, 0));
+            return _world.getBlock(_chunkPosition + ivec3(0, -1, 0), pos + ivec3(0, CHUNK_SIZE, 0));
         if (pos.y >= CHUNK_SIZE)
-            return _world.getBlock(_chunkPosition + Vector3i(0, 1, 0), pos + Vector3i(0, -CHUNK_SIZE, 0));
+            return _world.getBlock(_chunkPosition + ivec3(0, 1, 0), pos + ivec3(0, -CHUNK_SIZE, 0));
         if (pos.z < 0)
-            return _world.getBlock(_chunkPosition + Vector3i(0, 0, -1), pos + Vector3i(0, 0, CHUNK_SIZE));
+            return _world.getBlock(_chunkPosition + ivec3(0, 0, -1), pos + ivec3(0, 0, CHUNK_SIZE));
         if (pos.z >= CHUNK_SIZE)
-            return _world.getBlock(_chunkPosition + Vector3i(0, 0, 1), pos + Vector3i(0, 0, -CHUNK_SIZE));
+            return _world.getBlock(_chunkPosition + ivec3(0, 0, 1), pos + ivec3(0, 0, -CHUNK_SIZE));
             
         return _blocks[pos.x][pos.y][pos.z];
     }
@@ -134,7 +134,7 @@ final class Chunk {
         if (_isEmpty) return;
         // TODO
         // FIXME do not render empty
-        sh.setMat4("m_transform", translationMatrix(_chunkPosition.to!Vector3f * CHUNK_SIZE.to!float));
+        sh.setMat4("m_transform", translationMatrix(_chunkPosition.to!vec3 * CHUNK_SIZE.to!float));
         _va.renderTexture2D(GL_TRIANGLES, _vaLength, TextureAtlas.getTexture("blocks"));
     }
 }

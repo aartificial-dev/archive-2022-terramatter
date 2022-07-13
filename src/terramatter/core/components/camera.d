@@ -12,20 +12,24 @@ import terramatter.game.game;
 import terramatter.core.io.input;
 import terramatter.core.math.dlibwrapper;
 
+import terramatter.core.components.world; ////////////////////////////////
+import terramatter.core.engine;
+import terramatter.render.renderengine;
+
 import std.math;
 import std.algorithm.comparison;
 
 // LINK https://gecko0307.github.io/dlib/docs/dlib/math/vector.html
 class Camera: GameObject {
 
-    public Vector3f _rotation = Vector3f(0.0f);
-    private Vector3f _up = Vector3f(0.0f, 0.1f, 0.0f);
+    public vec3 _rotation = vec3(0.0f);
+    private vec3 _up = vec3(0.0f, 0.1f, 0.0f);
 
     protected final override void _create() {
-        transform.position = Vector3f(0.0f, 32.0f, 2.0f);
+        transform.position = vec3(0.0f, 32.0f, 2.0f);
         transform.rotation = Quaternionf().identity;
         // turn(180);
-        _rotation = Vector3f(0.0f, 0.0f, 0.0f);
+        _rotation = vec3(0.0f, 0.0f, 0.0f);
         transform.updateTransformation();
     }
 
@@ -38,22 +42,22 @@ class Camera: GameObject {
 
         Matrix4f rotMat = rotationMatrix(Axis.y, -rotY);
         if (Input.isKeyPressed(Input.KeyCode.keyD)) {
-            translate(Vector3f(delta, 0.0f, 0.0f) * rotMat * speed);
+            translate(vec3(delta, 0.0f, 0.0f) * rotMat * speed);
         }
         if (Input.isKeyPressed(Input.KeyCode.keyA)) {
-            translate(Vector3f(-delta, 0.0f, 0.0f) * rotMat * speed);
+            translate(vec3(-delta, 0.0f, 0.0f) * rotMat * speed);
         }
         if (Input.isKeyPressed(Input.KeyCode.keyW)) {
-            translate(Vector3f(0.0f, 0.0f, -delta) * rotMat * speed);
+            translate(vec3(0.0f, 0.0f, -delta) * rotMat * speed);
         }
         if (Input.isKeyPressed(Input.KeyCode.keyS)) {
-            translate(Vector3f(0.0f, 0.0f, delta) * rotMat * speed);
+            translate(vec3(0.0f, 0.0f, delta) * rotMat * speed);
         }
         if (Input.isKeyPressed(Input.KeyCode.keySpace)) {
-            translate(Vector3f(0.0f, delta, 0.0f) * speed);
+            translate(vec3(0.0f, delta, 0.0f) * speed);
         }
         if (Input.isKeyPressed(Input.KeyCode.keyLeftControl)) {
-            translate(Vector3f(0.0f, -delta, 0.0f) * speed);
+            translate(vec3(0.0f, -delta, 0.0f) * speed);
         }
 
         float _yrot = -Input.getMouseRelative.y * delta * 4.0f;
@@ -68,11 +72,17 @@ class Camera: GameObject {
         _rotation.x += _yrot;
         _rotation.x = _rotation.x.clamp(-80, 80);
         transform.rotation = Quaternionf().identity * 
-                             Quaternionf.fromEulerAngles(Vector3f(_rotation.x.degtorad, _rotation.y.degtorad, 0.0f));
+                             Quaternionf.fromEulerAngles(vec3(_rotation.x.degtorad, _rotation.y.degtorad, 0.0f));
         // if (_rotation.x > PI_2 + 0.05f || _rotation.x < -PI_2 - 0.05f) {
             // pitch(_yrot);
         // }
         // turn(_xrot);
+
+        doRayCast();
+    }
+
+    private void doRayCast() {
+        World world = engine.renderEngine.world;
     }
 
     protected final override void _tick(float delta) {}
@@ -87,8 +97,8 @@ class Camera: GameObject {
 
     public Matrix4f viewMatrix() {
         transform.updateTransformation();
-        Vector3f from = transform.position;
-        Vector3f to = transform.position - transform.direction;
+        vec3 from = transform.position;
+        vec3 to = transform.position - transform.direction;
         return lookAtMatrix(from, to, _up);
     }
 }
