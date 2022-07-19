@@ -15,6 +15,9 @@ import terramatter.core.math.dlibwrapper;
 import terramatter.core.components.world; ////////////////////////////////
 import terramatter.core.engine;
 import terramatter.render.renderengine;
+import terramatter.core.resources.mesh;
+import terramatter.core.resources.texture;
+import terramatter.core.container.array;
 
 import std.math;
 import std.algorithm.comparison;
@@ -89,7 +92,9 @@ class Camera: GameObject {
 
     protected final override void _input(InputEvent e) {}
 
-    protected final override void _render() {}
+    protected final override void _render() {
+
+    }
     
     public final void setActive() {
         game.setCamera(this);

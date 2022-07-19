@@ -44,7 +44,9 @@ class Engine {
 
     public void createWindow(string title) {
         Window.createWidnow(_width, _height, title);
-        printf("OpenGL version: '%s'\n\n", _renderEngine.getOpenGLVersion());
+        writeln("Succesfully loaded libraries and created SDL window.");
+        printf("OpenGL version: '%s'\n\n", RenderEngine.getOpenGLVersion());
+        writeln("Starting render engine");
         _renderEngine = new RenderEngine();
         _renderEngine.setEngine(this);
         Window.setTitle("TerraMatter");

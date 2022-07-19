@@ -23,10 +23,8 @@ class Window {
         Window._height = height;
 
         // Loading SDL
-
-        Window.loadLibraries();
-
-        // version(Windows) loadSDL("libs/sdl2.dll");
+        version(Windows) Window.loadLibrariesWindows();
+        version(Posix) Window.loadLibrariesLinux();
 
         SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_CONTEXT_MAJOR_VERSION, 4);
         SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_CONTEXT_MINOR_VERSION, 3);
@@ -124,7 +122,7 @@ class Window {
         return _window;
     }
 
-    public static void loadLibraries() {
+    public static void loadLibrariesWindows() {
         // TODO set loading for linux
 
         SDLSupport retsdl = loadSDL("../lib/SDL2.dll");
@@ -168,6 +166,63 @@ class Window {
         
 
         FTSupport retftp = loadFreeType("../lib/FreeType.dll");
+        if (retftp != ftSupport) {
+            if (retftp == ftSupport.noLibrary) {
+                throw new Error("Failed to load FreeType library.");
+            } else
+            if (retftp == ftSupport.badLibrary) {
+                throw new Error("Failed to load one of more FreeType symbols.");
+            }
+        }
+        writeln("FreeType library successfully loaded.");
+
+        writeln();
+    }
+
+    public static void loadLibrariesLinux() {
+        // TODO set loading for linux
+
+        SDLSupport retsdl = loadSDL();
+        if (retsdl != sdlSupport) {
+            if (retsdl == SDLSupport.noLibrary) {
+                throw new Error("Failed to load SDL library.");
+            } else
+            if (retsdl == SDLSupport.badLibrary) {
+                throw new Error("Failed to load one of more SDL symbols.");
+            }
+        }
+        writeln("SDL library successfully loaded.");
+
+        SDL_Init(SDL_INIT_EVERYTHING);
+
+        SDLTTFSupport retttf = loadSDLTTF();
+        if (retttf != sdlTTFSupport) {
+            if (retttf == sdlTTFSupport.noLibrary) {
+                throw new Error("Failed to load SDL TTF library.");
+            } else
+            if (retttf == sdlTTFSupport.badLibrary) {
+                throw new Error("Failed to load one of more SDL TTF symbols.");
+            }
+        }
+        writeln("SDL TTF library successfully loaded.");
+
+        TTF_Init();
+
+        SDLImageSupport imgsdl = loadSDLImage();
+        if (imgsdl != sdlImageSupport) {
+            if (imgsdl == sdlImageSupport.noLibrary) {
+                throw new Error("Failed to load SDL Image library.");
+            } else
+            if (imgsdl == sdlImageSupport.badLibrary) {
+                throw new Error("Failed to load one of more SDL Image symbols.");
+            }
+        }
+        writeln("SDL Image library successfully loaded.");
+
+        IMG_Init(IMG_INIT_PNG);
+        
+
+        FTSupport retftp = loadFreeType();
         if (retftp != ftSupport) {
             if (retftp == ftSupport.noLibrary) {
                 throw new Error("Failed to load FreeType library.");

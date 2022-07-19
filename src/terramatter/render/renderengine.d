@@ -153,12 +153,12 @@ final class RenderEngine {
             drawMode = Shader.DrawMode.black;
         } else
         if (drawMode == Shader.DrawMode.black) {
-            drawMode = Shader.DrawMode.normalMap;
-        } else
-        if (drawMode == Shader.DrawMode.normalMap) {
             drawMode = Shader.DrawMode.depth;
         } else
         if (drawMode == Shader.DrawMode.depth) {
+            drawMode = Shader.DrawMode.normalMap;
+        } else
+        if (drawMode == Shader.DrawMode.normalMap) {
             drawMode = Shader.DrawMode.normal;
         }
     }

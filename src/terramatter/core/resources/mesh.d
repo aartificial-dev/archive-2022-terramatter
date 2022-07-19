@@ -81,7 +81,8 @@ class Mesh {
      *   varr = pointer to array of vertices
      *   iarr = pointer to array of indices
      */
-    public static void generateFace(float[12] arr, vec3 norm, uint stx, TextureRegion reg, ref float[] varr, ref uint[] iarr) {
+    public static void generateFace(float[12] arr, vec3 norm, uint stx, TextureRegion reg, 
+                                    ref float[] varr, ref uint[] iarr) {
         float u = reg.u;
         float v = reg.v;
         float w = reg.u + reg.uvw;
@@ -105,10 +106,26 @@ class Mesh {
     } 
 
     /** 
-     * 
+     * Generates 1x1x1 cube mesh
      * Params:
      *   reg = Array of texture regions
-     *   p = Front left bottom corner of block
+     *   p = Front left bottom corner coordinate of block
+     * `[north, south, east, west, up, down]`
+     */
+    public static Mesh generateBlockMesh(TextureRegion[] reg, vec3 p) {
+        float[] varr;
+        uint[] iarr;
+        generateBlock(reg, p, varr, iarr, 0);
+        Mesh m = new Mesh();
+        m.setVertices(varr, iarr);
+        return m;
+    }
+
+    /** 
+     * Generates 1x1x1 cube
+     * Params:
+     *   reg = Array of texture regions
+     *   p = Front left bottom corner coordinate of block
      *   varr = pointer to array of vertices
      *   iarr = pointer to array of indices
      *   stx = Block index (number of block in varr before)

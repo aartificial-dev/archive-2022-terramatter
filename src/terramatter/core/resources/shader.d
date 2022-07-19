@@ -197,6 +197,6 @@ final class Shader {
     }
 
     public static enum DrawMode {
-        normal, black, normalMap, depth
+        normal, black, depth, normalMap
     }
 }

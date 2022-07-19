@@ -37,6 +37,8 @@ int main(string[] args) {
 
     Engine engine = new Engine(800, 600, 60, new Game());
     engine.createWindow("TerraMatter");
+
+    writeln("Starting game engine.");
     
     return engine.start();
 }

@@ -78,10 +78,13 @@ RayStaticResult rayIntersectStatic(vec3 origin, vec3 normal, float dist, bool do
 }
 
 RayStaticResult doStaticRaycast(vec3 origin, vec3 normal, float dist, vec3 corner, vec3 step, bool doDraw = false) {
-    vec3 blockCenter = blockCorner - (vec3(0.5f) * step);
+    vec3 blockCenter = corner - (vec3(0.5f) * step);
     if (doDraw) {
         // TODO draw
     } 
 
     return RayStaticResult();
 }
+
+// LINK https://github.com/codingminecraft/StreamMinecraftClone
+// LINK https://github.com/codingminecraft/StreamMinecraftClone/blob/master/Minecraft/src/physics/Physics.cpp

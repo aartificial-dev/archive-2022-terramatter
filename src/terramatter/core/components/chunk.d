@@ -115,17 +115,17 @@ final class Chunk {
         if (_isEmpty) return new Air();
         // GET ADJACENT CHUNK
         if (pos.x < 0) 
-            return _world.getBlock(_chunkPosition + ivec3(-1, 0, 0), pos + ivec3(CHUNK_SIZE, 0, 0));
-        if (pos.x >= CHUNK_SIZE) 
-            return _world.getBlock(_chunkPosition + ivec3(1, 0, 0), pos + ivec3(-CHUNK_SIZE, 0, 0));
+            return _world.getBlock(_chunkPosition + ivec3(-1, 0, 0), pos + ivec3(CHUNK_SIZE.to!int, 0, 0));
+        if (pos.x >= CHUNK_SIZE.to!int) 
+            return _world.getBlock(_chunkPosition + ivec3(1, 0, 0), pos + ivec3(-CHUNK_SIZE.to!int, 0, 0));
         if (pos.y < 0)
-            return _world.getBlock(_chunkPosition + ivec3(0, -1, 0), pos + ivec3(0, CHUNK_SIZE, 0));
-        if (pos.y >= CHUNK_SIZE)
-            return _world.getBlock(_chunkPosition + ivec3(0, 1, 0), pos + ivec3(0, -CHUNK_SIZE, 0));
+            return _world.getBlock(_chunkPosition + ivec3(0, -1, 0), pos + ivec3(0, CHUNK_SIZE.to!int, 0));
+        if (pos.y >= CHUNK_SIZE.to!int)
+            return _world.getBlock(_chunkPosition + ivec3(0, 1, 0), pos + ivec3(0, -CHUNK_SIZE.to!int, 0));
         if (pos.z < 0)
-            return _world.getBlock(_chunkPosition + ivec3(0, 0, -1), pos + ivec3(0, 0, CHUNK_SIZE));
-        if (pos.z >= CHUNK_SIZE)
-            return _world.getBlock(_chunkPosition + ivec3(0, 0, 1), pos + ivec3(0, 0, -CHUNK_SIZE));
+            return _world.getBlock(_chunkPosition + ivec3(0, 0, -1), pos + ivec3(0, 0, CHUNK_SIZE.to!int));
+        if (pos.z >= CHUNK_SIZE.to!int)
+            return _world.getBlock(_chunkPosition + ivec3(0, 0, 1), pos + ivec3(0, 0, -CHUNK_SIZE.to!int));
             
         return _blocks[pos.x][pos.y][pos.z];
     }

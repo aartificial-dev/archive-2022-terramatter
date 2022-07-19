@@ -11,7 +11,7 @@ import terramatter.core.io.error;
 
 template csizeof(T) {
     uint csizeof(int var) {
-        return (var * T.sizeof).to!uint;
+        return (var * int.sizeof).to!uint;
     }
     uint csizeof(T[] var) {
         return (var.length * T.sizeof).to!uint;
@@ -32,14 +32,22 @@ void checkglErrors() {
     GLenum err;
     while ( (err = glGetError()) != GL_NO_ERROR ) {
         switch (err) {
-            case GL_INVALID_ENUM: ErrLog.queueError("OPENGL::ERROR 1280 Invalid enum"); break;
-            case GL_INVALID_VALUE: ErrLog.queueError("OPENGL::ERROR 1281 Invalid value"); break;
-            case GL_INVALID_OPERATION: ErrLog.queueError("OPENGL::ERROR 1282 Invalid operation"); break;
-            case GL_STACK_OVERFLOW: ErrLog.queueError("OPENGL::ERROR 1283 Stack overflow"); break;
-            case GL_STACK_UNDERFLOW: ErrLog.queueError("OPENGL::ERROR 1284 Stack underflow"); break;
-            case GL_OUT_OF_MEMORY: ErrLog.queueError("OPENGL::ERROR 1285 Out of memeory"); break;
-            case GL_INVALID_FRAMEBUFFER_OPERATION: ErrLog.queueError("OPENGL::ERROR 1286 Invalid framebuffer op"); break;
-            default: ErrLog.queueError("OPENGL::ERROR Unknown error code"); break;
+            case GL_INVALID_ENUM: 
+                ErrLog.queueError("OPENGL::ERROR 1280 Invalid enum"); break;
+            case GL_INVALID_VALUE: 
+                ErrLog.queueError("OPENGL::ERROR 1281 Invalid value"); break;
+            case GL_INVALID_OPERATION: 
+                ErrLog.queueError("OPENGL::ERROR 1282 Invalid operation"); break;
+            case GL_STACK_OVERFLOW: 
+                ErrLog.queueError("OPENGL::ERROR 1283 Stack overflow"); break;
+            case GL_STACK_UNDERFLOW: 
+                ErrLog.queueError("OPENGL::ERROR 1284 Stack underflow"); break;
+            case GL_OUT_OF_MEMORY: 
+                ErrLog.queueError("OPENGL::ERROR 1285 Out of memeory"); break;
+            case GL_INVALID_FRAMEBUFFER_OPERATION: 
+                ErrLog.queueError("OPENGL::ERROR 1286 Invalid framebuffer operation"); break;
+            default: 
+                ErrLog.queueError("OPENGL::ERROR Unknown error code"); break;
         }
     }
 }
@@ -250,6 +258,13 @@ class VertexArray {
         _vao = new VAO();
         _vbo = new VBO(vertices, vertSize);
         _ebo = new EBO(indices, indSize);
+        _vao.bindBuffer(_vbo, _ebo);
+    }
+
+    this(float[] vertices, uint[] indices) {
+        _vao = new VAO();
+        _vbo = new VBO(vertices.ptr, csizeof!float(vertices));
+        _ebo = new EBO(indices.ptr, csizeof!uint(indices));
         _vao.bindBuffer(_vbo, _ebo);
     }
 
