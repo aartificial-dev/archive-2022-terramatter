@@ -23,26 +23,21 @@ alias lerp = lerpT!float;
 alias lerp = lerpT!real;
 alias lerp = lerpT!double;
 
-template lerpT(T: float) {
-    T lerpT(T from, T to, T weight) {
-        from += (weight * (to - from));
-        return from;
-    }
+T lerpT(T: float)(T from, T to, T weight) {
+    from += (weight * (to - from));
+    return from;
 }
 
 alias snapped = snappedT!float;
 alias snapped = snappedT!real;
 alias snapped = snappedT!double;
 
-template snappedT(T: float) {
-    T snappedT(T p_val, T p_step) {
-        if (p_step != 0) {
-            p_val = floor(p_val / p_step + 0.5) * p_step;
-        }
-        return p_val;
+T snappedT(T: float)(T p_val, T p_step) {
+    if (p_step != 0) {
+        p_val = floor(p_val / p_step + 0.5) * p_step;
     }
+    return p_val;
 }
-
 
 class RNG {
     private Random _rnd;
