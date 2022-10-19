@@ -85,11 +85,11 @@ class Engine {
             unprocessedTime += passedTime;
             frameCounter += passedTime;
 
-            /*┌───────────────────────────────────────────────┐  
-              │     WHY IT REFERENCES CONSTANT FRAMERATE      │  
-              │ WHEN CLEARLY IT SHOULD GO FOR UNPROCESSEDTIME │  
-              │                  INSTEAD???                   │  
-              └───────────────────────────────────────────────┘*/
+            /* -------------------------------------------------------------------------- */
+            /*                    WHY IT REFERENCES CONSTANT FRAMERATE                    */
+            /*               WHEN CLEARLY IT SHOULD GO FOR UNPROCESSEDTIME                */
+            /*                                 INSTEAD???                                 */
+            /* -------------------------------------------------------------------------- */
 
             while (unprocessedTime > _frameTime) {
                 doNeedRender = true;

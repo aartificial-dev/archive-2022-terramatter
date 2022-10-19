@@ -123,7 +123,6 @@ class Window {
     }
 
     public static void loadLibrariesWindows() {
-        // TODO set loading for linux
 
         SDLSupport retsdl = loadSDL("../lib/SDL2.dll");
         if (retsdl != sdlSupport) {

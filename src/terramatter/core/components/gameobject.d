@@ -34,7 +34,7 @@ class GameObject {
         _transform = new Transform();
         _engine = null;
     }
-
+    
     public final void addChild(GameObject child) {
         _children ~= child;
         child.engine(_engine);
@@ -123,10 +123,7 @@ class GameObject {
     }
 
     public final void propagateRender(RenderEngine re) {
-        // TODO
-        /*┌─────────────────┐  
-          │ ADD RENDER HERE │  
-          └─────────────────┘*/
+        // TODO Add render here
 
         _render();
         render();

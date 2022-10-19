@@ -67,17 +67,17 @@ static class Input {
                 break; 
                 case SDL_EventType.SDL_MOUSEWHEEL:
                     if(e.wheel.y> 0) { // scroll up
-                        // TODO
+                        // TODO scroll up
                     } else 
                     if(e.wheel.y < 0) { // scroll down
-                        // TODO
+                        // TODO scroll down
                     }
 
                     if(e.wheel.x > 0) { // scroll right
-                        // TODO
+                        // TODO scroll right
                     } else 
                     if(e.wheel.x < 0) { // scroll left
-                        // TODO
+                        // TODO scroll left
                     }
                 break;
                 // Close application button

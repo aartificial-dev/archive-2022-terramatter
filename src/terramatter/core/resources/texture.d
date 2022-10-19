@@ -41,6 +41,7 @@ final class Texture2D {
         loadFile(path);
     }
 
+    // TODO probably change to texture array
     /** 
      * 
      * Params:
@@ -309,7 +310,7 @@ final class Texture2D {
         setWrap(GL_REPEAT, GL_REPEAT);
 
         if (genMipmaps) {
-            setFilter(GL_NEAREST_MIPMAP_LINEAR, GL_NEAREST); // FIXME
+            setFilter(GL_NEAREST_MIPMAP_LINEAR, GL_NEAREST); // FIXME mipmaps
             glGenerateMipmap(glType(_textureType));
             glTexParameterf(glType(_textureType), GL_TEXTURE_LOD_BIAS, -1);
         } else {

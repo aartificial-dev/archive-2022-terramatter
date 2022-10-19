@@ -23,7 +23,8 @@ class TextRenderer {
     private Shader _fsh;
     private Color _cwhite;
 
-    this() {        
+    this() {
+        // TODO make shaders & proj static ..?  
         _fsh = new Shader("res/shaders/text_render_2d.vs", "res/shaders/text_render_2d.fs");
 
         _vao = new VAO(1);
@@ -102,7 +103,7 @@ class TextRenderer {
         renderTextExt(text, x, y, 1, 1, font, _cwhite);
     }
 
-    // TODO
+    // TODO drawTextFull
     /* Draw text
     *   ext  x y string sep w
     *   color  x y string col

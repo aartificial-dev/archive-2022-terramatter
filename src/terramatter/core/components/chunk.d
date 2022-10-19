@@ -132,7 +132,6 @@ final class Chunk {
 
     public void render(Shader sh) {
         if (_isEmpty) return;
-        // TODO
         // FIXME do not render empty
         sh.setMat4("m_transform", translationMatrix(_chunkPosition.to!vec3 * CHUNK_SIZE.to!float));
         _va.renderTexture2D(GL_TRIANGLES, _vaLength, TextureAtlas.getTexture("blocks"));

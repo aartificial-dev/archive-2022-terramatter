@@ -1,11 +1,11 @@
-/*┌──────────────────────────────────────┐  
-  │             TERRAMATTER              │  
-  ├──────────────────────────────────────┤  
-  │    GAME BY AL1-CE (AKA SILYNEKO)     │  
-  │ GAME ENGINE BY AL1-CE (AKA SILYNEKO) │  
-  │          PART OF ARTIFICIAL          │  
-  │       COPYRIGHT (C) 2022-2022        │  
-  └──────────────────────────────────────┘*/
+/* -------------------------------------------------------------------------- */
+/*                                TerraMatter                                 */
+/*                                                                            */
+/*                       Game by al1-ce (aka silyneko)                        */
+/*                    Game engine by al1-ce (aka silyneko)                    */
+/*                             Part of Artificial                             */
+/*                          Copyright (c) 2022-2022                           */
+/* -------------------------------------------------------------------------- */
 
 import std.stdio;
 import std.string;

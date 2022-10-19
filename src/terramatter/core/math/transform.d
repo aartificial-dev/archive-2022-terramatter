@@ -166,7 +166,7 @@ class Transform {
         _rotation *= rotationQuaternion!float(Axis.z, degtorad(angle));
     }
 
-    // TODO
+    // TODO do full transform class
     // LINK https://github.com/gecko0307/dagon/blob/master/src/dagon/graphics/entity.d
     // LINK https://learnopengl.com/Getting-started/Transformations
 }

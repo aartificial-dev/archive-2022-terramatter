@@ -32,7 +32,8 @@ final class Shader {
         linkFromString(v, f);
     }
 
-    // TODO
+    // TODO make shader caching to reduce memory usage on similar shaders
+
     // LINK https://learnopengl.com/code_viewer_gh.php?code=includes/learnopengl/shader.h
 
     public void linkFromString(string vertex, string fragment) {
@@ -147,7 +148,7 @@ final class Shader {
         glUniform1f(getUniformLocation(name), value);
     }
     
-    public void setVec2(string name, Vector2f value) {
+    public void setVec2(string name, vec2 value) {
         glUniform2fv(getUniformLocation(name), 1, value.arrayof.ptr);
     }
 
@@ -163,7 +164,7 @@ final class Shader {
         glUniform3f(getUniformLocation(name), x, y, z);
     }
 
-    public void setVec4(string name, Vector4f value) {
+    public void setVec4(string name, vec4 value) {
         glUniform4fv(getUniformLocation(name), 1, value.arrayof.ptr);
     }
 
@@ -171,6 +172,7 @@ final class Shader {
         glUniform4f(getUniformLocation(name), x, y, z, w);
     }
 
+    // TODO make vec4 & col interchangeable
     public void setCol(string name, Color value) {
         glUniform4fv(getUniformLocation(name), 1, value.arrayof.ptr);
     }

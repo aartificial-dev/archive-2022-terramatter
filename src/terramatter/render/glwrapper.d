@@ -9,6 +9,8 @@ import terramatter.core.resources.texture;
 
 import terramatter.core.io.error;
 
+// TODO wrap it even more
+
 template csizeof(T) {
     uint csizeof(int var) {
         return (var * int.sizeof).to!uint;

@@ -13,13 +13,14 @@ bool isValidOp(string op, T, R, E = T)() pure {
     mixin(`return is( typeof( mixin("T.init"` ~ op ~ `"R.init" ) ): E );`);
 }
 
-/*┌──────────────────────────────────────────────────────────┐  
-  │            LOTS OF STUFF IS PULLED FROM HERE:            │  
-  │ HTTPS://GITHUB.COM/DEXSET/DESCORE/TREE/MASTER/IMPORT/DES │  
-  │  TBH THIS WHOLE FILE IS FROM THIS REPO EXCEPT ISVALIDOP  │  
-  │ BUT IT WORKS AND I DON'T EVEN WANT TO TRY TO UNDERSTAND  │  
-  │                  WHAT IS GOING ON HERE                   │  
-  └──────────────────────────────────────────────────────────┘*/
+/* -------------------------------------------------------------------------- */
+/*                     LOTS OF STUFF IS PULLED FROM HERE:                     */
+/*          HTTPS://GITHUB.COM/DEXSET/DESCORE/TREE/MASTER/IMPORT/DES          */
+/*           TBH THIS WHOLE FILE IS FROM THIS REPO EXCEPT ISVALIDOP           */
+/*          BUT IT WORKS AND I DON'T EVEN WANT TO TRY TO UNDERSTAND           */
+/*                           WHAT IS GOING ON HERE                            */
+/* -------------------------------------------------------------------------- */
+
 
 mixin template accessByString( size_t N, T, string data, string AS, string VVASES=" ", string VVASVS="|")
     if( isCompatibleArrayAccessStrings(N,AS,VVASES,VVASVS) ) {

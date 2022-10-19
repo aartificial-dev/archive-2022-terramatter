@@ -13,6 +13,7 @@ import dlib.math.vector;
 
 import terramatter.meta.meta;
 
+// TODO convert to struct from vec4
 class Color {
     public float[4] data;
 
@@ -280,7 +281,7 @@ class Color {
     }
 
 
-    // TODO
+    // TODO add colours from godot
     // LINK https://github.com/godotengine/godot/blob/master/core/math/color.cpp
     static this() {
         _colorStringValues = [
