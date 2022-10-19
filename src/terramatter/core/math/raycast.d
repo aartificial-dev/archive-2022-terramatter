@@ -63,14 +63,32 @@ RayIntersection rayIntersectTriangle(vec3 origin, vec3 target, Triangle triangle
     return RayIntersection();
 }
 
-
+RayStaticResult rayCast(vec3 origin, vec3 normal, float dist, bool doDraw = false) {
+    bool isBlock = false;
+    // TODO ask world for block
+    float step = 0.1f;
+    vec3 pos = origin;
+    for (int i = 0; i < dist; i++) {
+        // TODO ask for block here 
+        if (isBlock) {
+            return RayStaticResult(
+                pos, pos, 
+                vec3(1.0f, 1.0f, 1.0f),
+                normal, true
+            );
+        }
+        pos += normal * step;
+    }
+    
+    return RayStaticResult();
+}
 
 struct RayStaticResult {
     vec3 point;
     vec3 blockCenter;
     vec3 blockSize;
     vec3 hitNormal;
-    bool isHit;
+    bool isHit = false;
 }
 
 RayStaticResult rayIntersectStatic(vec3 origin, vec3 normal, float dist, bool doDraw = false) {
